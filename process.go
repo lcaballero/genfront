@@ -49,6 +49,9 @@ func (p *Process) OutputFile() string {
 func (p *Process) Debug() bool {
 	return p.Ctx.Bool("debug")
 }
+func (p *Process) NoSource() bool {
+	return p.Ctx.Bool("no-source")
+}
 
 func (p *Process) Run() {
 	b, err := ioutil.ReadFile(p.InputFile())
@@ -69,7 +72,13 @@ func (p *Process) Run() {
 		fmt.Println()
 		fmt.Println("File To be Written: ", p.OutputFile())
 		fmt.Println(strings.Repeat("-", 80))
-		fmt.Println(p.Rendered)
+
+		if p.NoSource() {
+			fmt.Println("Generated source code supressed with --quiet")
+		} else {
+			fmt.Println(p.Rendered)
+		}
+
 	}
 }
 

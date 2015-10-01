@@ -14,6 +14,10 @@ func NewCli() *cmd.App {
 	app.Usage = usage
 	app.Action = NewProcess
 	app.Flags = []cmd.Flag{
+		cmd.BoolFlag{
+			Name: "no-source",
+			Usage: "Hides generated source when using debug flag.",
+		},
 		cmd.StringFlag{
 			Name: "input",
 			Usage: "Front-matter file to process",
