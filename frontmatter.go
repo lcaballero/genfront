@@ -4,10 +4,10 @@ import (
 	"bytes"
 	"log"
 	"bufio"
-	ray "github.com/aymerick/raymond"
 	"github.com/spf13/viper"
 	"io"
 	"strings"
+	"html/template"
 )
 
 
@@ -33,20 +33,16 @@ func BuildData(pairs map[string]interface{}) map[string]interface{} {
 	return pairs
 }
 
-func AddHelpers() {
-	ray.RegisterHelper("toPascal", toPascal)
-}
-
-func (p *Portions) Render() error {
+func (p *Portions) Settings() map[string]interface{} {
 	v := viper.New()
 	v.SetConfigType("yaml")
 	v.ReadConfig(bytes.NewBufferString(p.FrontMatter))
 
-	settings := BuildData(v.AllSettings())
-	AddHelpers()
-	p.Rendered, p.Error = ray.Render(p.Template, settings)
+	return BuildData(v.AllSettings())
+}
 
-	return p.Error
+func (p *Portions) Render() (*template.Template, error) {
+	return template.New("").Funcs(BuildFuncMap()).Parse(p.Template)
 }
 
 func (p *Portions) Read(r *bufio.Reader) error {
