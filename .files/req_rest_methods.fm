@@ -1,0 +1,28 @@
+---
+methods:
+  - OPTIONS
+  - GET
+  - HEAD
+  - POST
+  - PUT
+  - DELETE
+  - TRACE
+  - CONNECT
+---
+package {{ .ENV.GOPACKAGE }}
+{{ .ENV.GEN_TAGLINE }}
+// {{ getenv "GOLINE" }}
+
+const (
+{{ range .methods }}	{{ . }} = "{{ . }}"
+{{ end }})
+
+// Methods for the Rest state{{ range .methods }}
+func (r *Rest) {{ . | title }}() *Rest {
+	return r.Method({{ . }})
+}{{ end }}
+
+// Methods for Req state{{ range .methods }}
+func (r *Req) {{ . | title }}() *Req {
+	return r.Method({{ . }})
+}{{ end }}

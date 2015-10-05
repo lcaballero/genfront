@@ -1,0 +1,46 @@
+package {{ .ENV.GOPACKAGE }}
+{{ .ENV.GEN_TAGLINE }}
+
+import (
+	"errors"
+	"fmt"
+	"strings"
+)
+
+// Methods for the Rest state
+func (r *{{ .structName }}) ToMap() map[string]interface{} {
+  m := make(map[string]interface{}){{ range .names }}
+  m["{{ . }}"] = r.{{ . }}{{ end }}
+  return m
+}
+
+// Private function (to this fil).  Don't use this function
+// directly, it's intended for use only in this file.
+func __snakeToPascal(sk string) string {
+	parts := strings.Split(sk, "_")
+	for i,p := range parts {
+		parts[i] = strings.Title(p)
+	}
+	return strings.Join(parts, "")
+}
+
+
+// Fills pointer array with pointers to receiver fields.
+func (e *{{ .structName }}) FromColumns(cols []string, ptrs []interface{}) error {
+	if len(cols) != len(ptrs) {
+		return errors.New("Column length doesn't equal pointer array length")
+	}
+	snakeToPascal := __snakeToPascal
+	for i,c := range cols {
+		pascal := snakeToPascal(c)
+		switch pascal { {{ range .names }}
+		case "{{ . }}":
+			ptrs[i] = &e.{{ . }}{{ end }}
+		default:
+			return errors.New(fmt.Sprintf(
+				"Provided a column that doesn't exist in structure: %s",
+				c))
+		}
+	}
+	return nil
+}
