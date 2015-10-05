@@ -1,7 +1,8 @@
-package main
+package cli
 
 import (
 	cmd "github.com/codegangsta/cli"
+	"genfront/process"
 )
 
 var usage = "Converts processes a front matter file with yaml data and handlebars template."
@@ -9,7 +10,7 @@ var usage = "Converts processes a front matter file with yaml data and handlebar
 
 func NewCli() *cmd.App {
 	app := cmd.NewApp()
-	app.Name = "ggen"
+	app.Name = "genfront"
 	app.Version = "0.0.1"
 	app.Usage = usage
 	app.Commands = []cmd.Command{
@@ -25,9 +26,14 @@ func fields() cmd.Command {
 			Name: "output",
 			Usage: "Name of source-code output file",
 		},
+		cmd.IntFlag{
+			Name: "line",
+			Usage: "Line number of this instance.",
+		},
 	}
 	return cmd.Command{
 		Name: "fields",
+		Action: process.NewFieldProcessor,
 		Flags: flags(debug(), custom...),
 	}
 }
@@ -36,17 +42,17 @@ func front() cmd.Command {
 	custom := []cmd.Flag{
 		cmd.StringFlag{
 			Name: "input",
-			Usage: "Front-matter file to process",
+			Usage: "Front-matter file to process.",
 		},
 		cmd.StringFlag{
 			Name: "output",
-			Usage: "Name of source-code output file",
+			Usage: "Name of source-code output file.",
 		},
 	}
 	return cmd.Command{
 		Name: "front",
 		Flags: flags(debug(), custom...),
-		Action: NewFrontMatterProcessor,
+		Action: process.NewFrontMatterProcessor,
 	}
 }
 

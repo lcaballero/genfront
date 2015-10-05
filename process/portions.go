@@ -1,36 +1,20 @@
-package main
-
+package process
 import (
 	"bytes"
-	"log"
 	"bufio"
-	"github.com/spf13/viper"
-	"io"
-	"strings"
 	"html/template"
+	"io"
+	"log"
+	"strings"
+	"github.com/spf13/viper"
 )
+
 
 
 type Portions struct {
 	FrontMatter string
 	Template string
-	Rendered string
 	Error error
-}
-
-const (
-	Initial uint = iota
-	FrontMatter
-	Template
-)
-
-func BuildData(pairs map[string]interface{}) map[string]interface{} {
-	env := make(map[string]interface{})
-	for k,v := range BuildEnv() {
-		env[k] = v
-	}
-	pairs["ENV"] = env
-	return pairs
 }
 
 func (p *Portions) Settings() map[string]interface{} {
@@ -42,7 +26,7 @@ func (p *Portions) Settings() map[string]interface{} {
 }
 
 func (p *Portions) Render() (*template.Template, error) {
-	return template.New("").Funcs(BuildFuncMap()).Parse(p.Template)
+	return template.New("FrontMatterProcessor").Funcs(BuildFuncMap()).Parse(p.Template)
 }
 
 func (p *Portions) Read(r *bufio.Reader) error {
@@ -86,3 +70,4 @@ func (p *Portions) Read(r *bufio.Reader) error {
 
 	return nil
 }
+

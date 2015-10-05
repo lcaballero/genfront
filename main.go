@@ -2,9 +2,10 @@ package main
 
 import (
 	"os"
+	"genfront/cli"
 )
 
 func main() {
-	NewCli().Run(os.Args)
+	cli.NewCli().Run(os.Args)
 }
 
