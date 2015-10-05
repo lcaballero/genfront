@@ -3,8 +3,8 @@
 `genfront` is a code generating tool intended for use with the `go generate` tool.
 The tool is intended to process [Front Matter][Front Matter] to generate code
 for the package.  Of course, many other tools could be used to generate source
-code, but this tool specifically uses [Yaml][Yaml] and [Handlebars][Handlebars]
-to create new source code.
+code, but this tool specifically uses [Yaml][Yaml] and Go template package in the
+Go sdk to create new source code.
 
 
 ## Usage
@@ -31,28 +31,23 @@ methods:
   - TRACE
   - CONNECT
 ---
-package {{ENV.GOPACKAGE}}
-// Generated genfront -- do not change
+package {{ .ENV.GOPACKAGE }}
+{{ .ENV.GEN_TAGLINE }}
+// {{ getenv "GOLINE" }}
 
 const (
-{{#each methods}}
-	{{this}} = "{{this}}"
-{{/each}}
-)
+{{ range .methods }}	{{ . }} = "{{ . }}"
+{{ end }})
 
-// Methods for the Rest state
-{{#each methods}}
-func (r *Rest) {{toPascal this}}() *Rest {
-	return r.Method({{this}})
-}
-{{/each}}
+// Methods for the Rest state{{ range .methods }}
+func (r *Rest) {{ . | title }}() *Rest {
+	return r.Method({{ . }})
+}{{ end }}
 
-// Methods for Req state
-{{#each methods}}
-func (r *Req) {{toPascal this}}() *Req {
-	return r.Method({{this}})
-}
-{{/each}}
+// Methods for Req state{{ range .methods }}
+func (r *Req) {{ . | title }}() *Req {
+	return r.Method({{ . }})
+}{{ end }}
 ```
 
 ## Helpers
