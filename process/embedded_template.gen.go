@@ -94,6 +94,7 @@ var _struct_sql_tomapFm = []byte(`package {{ .ENV.GOPACKAGE }}
 {{ .ENV.GEN_TAGLINE }}
 
 import (
+	"database/sql"
 	"errors"
 	"fmt"
 	"strings"
@@ -116,6 +117,36 @@ func __snakeToPascal(sk string) string {
 	return strings.Join(parts, "")
 }
 
+// For known named parameter types, this strips known prefixes.
+func __removePrefix(prop string) string {
+	hasPrefix := strings.HasPrefix(prop, "$") ||
+		strings.HasPrefix(prop, ":") ||
+		strings.HasPrefix(prop, "@") ||
+		strings.HasPrefix(prop, "?")
+	if hasPrefix {
+		return prop[1:]
+	}
+	return prop
+}
+
+// Returns an array of values from the {{ .structName }} instance as designated
+// in the props array.  The string of the props array should conform to the
+// possible named value syntax which sqlite accepts.
+// (See: https://www.sqlite.org/c3ref/bind_parameter_name.html and
+// https://www.sqlite.org/c3ref/bind_blob.html)
+func (e *{{ .structName }}) Parameters(props []string) (rs []interface{}, err error) {
+	rs = make([]interface{}, len(props))
+	for i,p := range props {
+		p = __removePrefix(p)
+		switch p { {{ range .names }}
+		case "{{ . }}":
+			rs[i] = e.{{ . }}{{ end }}
+		default:
+			err = errors.New(fmt.Sprintf("{{ .structName }} doesn't have a property named: %s", p))
+		}
+	}
+	return rs, err
+}
 
 // Fills pointer array with pointers to receiver fields.
 func (e *{{ .structName }}) FromColumns(cols []string, ptrs []interface{}) error {
@@ -135,6 +166,28 @@ func (e *{{ .structName }}) FromColumns(cols []string, ptrs []interface{}) error
 		}
 	}
 	return nil
+}
+
+func To{{ .structName }}Rows(rows *sql.Rows) ([]*{{ .structName }}, error) {
+	cols, err := rows.Columns()
+	if err != nil {
+		return nil, err
+	}
+
+	ptrs := make([]interface{}, len(cols))
+	w := make([]*{{ .structName }}, 0)
+
+	for rows.Next() {
+		e := &{{ .structName }}{}
+		if err := e.FromColumns(cols, ptrs); err != nil {
+			return nil, err
+		}
+		if err := rows.Scan(ptrs...); err != nil {
+			return nil, err
+		}
+		w = append(w, e)
+	}
+	return w, nil
 }`)
 
 func struct_sql_tomapFmBytes() ([]byte, error) {
@@ -147,7 +200,7 @@ func struct_sql_tomapFm() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "struct_sql_tomap.fm", size: 1125, mode: os.FileMode(420), modTime: time.Unix(1444022245, 0)}
+	info := bindataFileInfo{name: "struct_sql_tomap.fm", size: 2603, mode: os.FileMode(420), modTime: time.Unix(1447362031, 0)}
 	a := &asset{bytes: bytes, info:  info}
 	return a, nil
 }

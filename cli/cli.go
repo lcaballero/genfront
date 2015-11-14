@@ -2,7 +2,7 @@ package cli
 
 import (
 	cmd "github.com/codegangsta/cli"
-	"genfront/process"
+	"github.com/lcaballero/genfront/process"
 )
 
 var usage = "Converts processes a front matter file with yaml data and handlebars template."
