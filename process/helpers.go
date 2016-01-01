@@ -22,3 +22,4 @@ func SnakeToPascal(sk string) string {
 	}
 	return strings.Join(parts, "")
 }
+

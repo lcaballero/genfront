@@ -1,4 +1,4 @@
-package process
+package fields
 
 import (
 	"go/token"
@@ -11,21 +11,9 @@ import (
 	"log"
 	"os"
 	"strings"
+	"github.com/lcaballero/genfront/process"
+	"github.com/lcaballero/genfront/cli"
 )
-
-
-type FieldsProcessor struct {
-	*Processor
-}
-
-func NewFieldProcessor(c *cmd.Context) {
-	fp := &FieldsProcessor{
-		Processor: &Processor{ Ctx: c },
-	}
-
-	ShowEnvironment()
-	fp.Load()
-}
 
 type GenState int
 const (
@@ -33,8 +21,25 @@ const (
 	HasComment GenState = 2
 )
 
+type FieldsProcessor struct {
+	*cli.CliConf
+}
+
+func NewFieldProcessor(c *cmd.Context) {
+	fp := &FieldsProcessor{
+		CliConf: cli.NewCliConf(c),
+	}
+
+	process.ShowEnvironment()
+	fp.Load()
+}
+
+func (fp *FieldsProcessor) Validate() bool {
+	return fp.CliConf.HasOutputFile()
+}
+
 func (fp *FieldsProcessor) Load() {
-	env := BuildEnv()
+	env := process.BuildEnv()
 	cwd := env.String("CWD")
 	gofile := env.String("GOFILE")
 	filename := filepath.Join(cwd, gofile)
@@ -45,7 +50,7 @@ func (fp *FieldsProcessor) Load() {
 		panic(err)
 	}
 
-	line := fp.Ctx.Int("line")
+	line := fp.Line()
 	fmt.Printf("GOLINE: %d\n", line)
 
 	state := InitialFieldsGen
@@ -93,12 +98,12 @@ func (p *FieldsProcessor) outfile(gen string) string {
 }
 
 func (p *FieldsProcessor) Render() (*template.Template, error) {
-	tpl,err := Asset("struct_sql_tomap.fm")
+	tpl,err := process.Asset("struct_sql_tomap.fm")
 	if err != nil {
 		return nil, err
 	}
 	fm := strings.TrimLeft(string(tpl), " \n\r\t")
-	return template.New("").Funcs(BuildFuncMap()).Parse(fm)
+	return template.New("").Funcs(process.BuildFuncMap()).Parse(fm)
 }
 
 func (fp *FieldsProcessor) State(filename, structName string, stc *ast.StructType) {
@@ -113,8 +118,8 @@ func (fp *FieldsProcessor) State(filename, structName string, stc *ast.StructTyp
 	if err != nil {
 		log.Fatal(err)
 	}
-	env := BuildEnv()
-	env = BuildData(env)
+	env := process.BuildEnv()
+	env = process.BuildData(env)
 	env["names"] = names
 	env["structName"] = structName
 

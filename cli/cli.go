@@ -2,25 +2,28 @@ package cli
 
 import (
 	cmd "github.com/codegangsta/cli"
-	"github.com/lcaballero/genfront/process"
 )
 
-var usage = "Converts processes a front matter file with yaml data and handlebars template."
+var usage = "Provides various Go generation utilities."
 
+type Processor func(c *cmd.Context)
+type Processors struct {
+	FrontMatter, FieldProcessor Processor
+}
 
-func NewCli() *cmd.App {
+func NewCli(p *Processors) *cmd.App {
 	app := cmd.NewApp()
 	app.Name = "genfront"
 	app.Version = "0.0.1"
 	app.Usage = usage
 	app.Commands = []cmd.Command{
-		front(),
-		fields(),
+		frontCommand(p.FrontMatter),
+		fieldsCommand(p.FieldProcessor),
 	}
 	return app
 }
 
-func fields() cmd.Command {
+func fieldsCommand(p Processor) cmd.Command {
 	custom := []cmd.Flag{
 		cmd.StringFlag{
 			Name: "output",
@@ -34,12 +37,12 @@ func fields() cmd.Command {
 	return cmd.Command{
 		Name: "fields",
 		Usage: "Process struct fields for sql io.",
-		Action: process.NewFieldProcessor,
-		Flags: flags(debug(), custom...),
+		Action: p,
+		Flags: flags(debugFlag(), custom...),
 	}
 }
 
-func front() cmd.Command {
+func frontCommand(p Processor) cmd.Command {
 	custom := []cmd.Flag{
 		cmd.StringFlag{
 			Name: "input",
@@ -53,16 +56,16 @@ func front() cmd.Command {
 	return cmd.Command{
 		Name: "front",
 		Usage: "Runs generator based on a front-matter file.",
-		Flags: flags(debug(), custom...),
-		Action: process.NewFrontMatterProcessor,
+		Flags: flags(debugFlag(), custom...),
+		Action: p,
 	}
 }
 
-func debug() []cmd.Flag {
+func debugFlag() []cmd.Flag {
 	return []cmd.Flag{
 		cmd.BoolFlag{
-			Name: "no-source",
-			Usage: "Hides generated source when using debug flag.",
+			Name: "noop",
+			Usage: "Doesn't generate source. Use with the --debug flag.",
 		},
 		cmd.BoolFlag{
 			Name: "debug",

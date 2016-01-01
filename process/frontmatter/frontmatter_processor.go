@@ -1,4 +1,4 @@
-package process
+package frontmatter
 
 import (
 	cmd "github.com/codegangsta/cli"
@@ -8,9 +8,10 @@ import (
 	"bufio"
 	"bytes"
 	"fmt"
-	"strings"
 	"os"
 	"html/template"
+	"github.com/lcaballero/genfront/process"
+	"github.com/lcaballero/genfront/cli"
 )
 
 const (
@@ -23,8 +24,8 @@ const (
 // generating over a front matter file.
 func NewFrontMatterProcessor(c *cmd.Context) {
 	p := &FrontMatterProcess{
-		Processor: &Processor{ Ctx: c },
-		Portions: &Portions{},
+		CliConf: cli.NewCliConf(c),
+		portions: &Portions{},
 	}
 
 	err := p.Validate()
@@ -35,31 +36,31 @@ func NewFrontMatterProcessor(c *cmd.Context) {
 }
 
 type FrontMatterProcess struct {
-	*Portions
-	*Processor
+	portions *Portions
+	*cli.CliConf
 }
 
 func (p *FrontMatterProcess) Validate() error {
-	if p.HasString("input") && p.HasString("output") {
+	if p.HasInputFile() && p.HasOutputFile() {
 		return nil
 	} else {
 		return errors.New("Both --input and --output are required")
 	}
 }
 
-func (p *FrontMatterProcess) dumpEnv(tpl *template.Template) {
+func (p *FrontMatterProcess) debug(tpl *template.Template) {
 	fmt.Println()
 	fmt.Println("ENV: ")
-	fmt.Println(strings.Repeat("-", 80))
-	ShowEnvironment()
+	fmt.Println(process.Sep())
+	process.ShowEnvironment()
 	fmt.Println()
-	fmt.Println("File To be Written: ", p.OutputFile())
-	fmt.Println(strings.Repeat("-", 80))
+	fmt.Println(p.CliConf)
+	fmt.Println(process.Sep())
 
-	if p.NoSource() {
-		fmt.Println("Generated source code supressed with --no-source")
+	if p.Noop() {
+		fmt.Println("Generated source code supressed with --noop")
 	} else {
-		tpl.Execute(os.Stdout, p.Settings())
+		tpl.Execute(os.Stdout, p.portions.Settings())
 	}
 }
 
@@ -69,22 +70,27 @@ func (p *FrontMatterProcess) Run() {
 		log.Fatal(err)
 	}
 	reader := bufio.NewReader(bytes.NewBuffer(b))
-	p.Read(reader)
-	tpl,err := p.Render()
+
+	err = p.portions.Read(reader)
 	if err != nil {
-		p.dumpEnv(tpl)
 		log.Fatal(err)
 	}
 
-	if !p.Debug() {
+	tpl,err := p.portions.CreateTemplate()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	if p.Debug() {
+		p.debug(tpl)
+	} else {
 		file, err := os.Create(p.OutputFile())
 		if err == nil {
 			defer file.Close()
-			tpl.Execute(file, p.Settings())
+			tpl.Execute(file, p.portions.Settings())
 		} else {
 			log.Fatal(err)
 		}
-	} else {
-		p.dumpEnv(tpl)
 	}
 }
+

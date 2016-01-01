@@ -1,4 +1,4 @@
-package process
+package frontmatter
    
 import (
 	. "github.com/smartystreets/goconvey/convey"
@@ -6,6 +6,7 @@ import (
 	"bytes"
 	"bufio"
 	"strings"
+	"github.com/lcaballero/genfront/process"
 )
 
 func TestFrontmatter(t *testing.T) {
@@ -25,7 +26,7 @@ names:
 </ul>
 `
 		reader := bufio.NewReader(bytes.NewBufferString(s))
-		portions := &Portions{}
+		portions := &process.Portions{}
 		err := portions.Read(reader)
 		So(err, ShouldBeNil)
 
@@ -48,7 +49,7 @@ names:
 2
 `
 		reader := bufio.NewReader(bytes.NewBufferString(s))
-		portions := &Portions{}
+		portions := &process.Portions{}
 		err := portions.Read(reader)
 
 		So(err, ShouldBeNil)

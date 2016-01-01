@@ -17,6 +17,9 @@ var EnvVars = []string{
 	"DOLLAR",
 }
 
+func Sep() string {
+	return strings.Repeat("-", 80)
+}
 
 func ShowEnvironment() {
 	for k,v := range BuildEnv() {

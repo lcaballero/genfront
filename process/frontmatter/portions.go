@@ -1,12 +1,13 @@
-package process
+package frontmatter
+
 import (
 	"bytes"
 	"bufio"
 	"html/template"
 	"io"
-	"log"
 	"strings"
 	"github.com/spf13/viper"
+	"github.com/lcaballero/genfront/process"
 )
 
 
@@ -22,11 +23,11 @@ func (p *Portions) Settings() map[string]interface{} {
 	v.SetConfigType("yaml")
 	v.ReadConfig(bytes.NewBufferString(p.FrontMatter))
 
-	return BuildData(v.AllSettings())
+	return process.BuildData(v.AllSettings())
 }
 
-func (p *Portions) Render() (*template.Template, error) {
-	return template.New("FrontMatterProcessor").Funcs(BuildFuncMap()).Parse(p.Template)
+func (p *Portions) CreateTemplate() (*template.Template, error) {
+	return template.New("FrontMatterProcessor").Funcs(process.BuildFuncMap()).Parse(p.Template)
 }
 
 func (p *Portions) Read(r *bufio.Reader) error {
@@ -61,7 +62,7 @@ func (p *Portions) Read(r *bufio.Reader) error {
 		if err != nil && err == io.EOF {
 			break
 		} else if err != nil {
-			log.Fatal(err)
+			return err
 		}
 	}
 

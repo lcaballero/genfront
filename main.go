@@ -3,9 +3,15 @@ package main
 import (
 	"os"
 	"github.com/lcaballero/genfront/cli"
+	"github.com/lcaballero/genfront/process/fields"
+	"github.com/lcaballero/genfront/process/frontmatter"
 )
 
 func main() {
-	cli.NewCli().Run(os.Args)
+	procs := &cli.Processors{
+		FieldProcessor: fields.NewFieldProcessor,
+		FrontMatter: frontmatter.NewFrontMatterProcessor,
+	}
+	cli.NewCli(procs).Run(os.Args)
 }
 
