@@ -30,9 +30,10 @@ hs_err_pid*
 doc/
 docs/
 node_modules/
-.idea/
 pkg/
 bin/
+.idea/
+.files/
 
 files/elasticsearch/
 src/tmp-*

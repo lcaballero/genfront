@@ -2,7 +2,7 @@ package cli
 
 import (
 	cmd "github.com/codegangsta/cli"
-	"genfront/process"
+	"github.com/lcaballero/genfront/process"
 )
 
 var usage = "Converts processes a front matter file with yaml data and handlebars template."
@@ -33,6 +33,7 @@ func fields() cmd.Command {
 	}
 	return cmd.Command{
 		Name: "fields",
+		Usage: "Process struct fields for sql io.",
 		Action: process.NewFieldProcessor,
 		Flags: flags(debug(), custom...),
 	}
@@ -51,6 +52,7 @@ func front() cmd.Command {
 	}
 	return cmd.Command{
 		Name: "front",
+		Usage: "Runs generator based on a front-matter file.",
 		Flags: flags(debug(), custom...),
 		Action: process.NewFrontMatterProcessor,
 	}

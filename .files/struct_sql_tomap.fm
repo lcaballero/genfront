@@ -2,6 +2,7 @@ package {{ .ENV.GOPACKAGE }}
 {{ .ENV.GEN_TAGLINE }}
 
 import (
+	"database/sql"
 	"errors"
 	"fmt"
 	"strings"
@@ -24,6 +25,36 @@ func __snakeToPascal(sk string) string {
 	return strings.Join(parts, "")
 }
 
+// For known named parameter types, this strips known prefixes.
+func __removePrefix(prop string) string {
+	hasPrefix := strings.HasPrefix(prop, "$") ||
+		strings.HasPrefix(prop, ":") ||
+		strings.HasPrefix(prop, "@") ||
+		strings.HasPrefix(prop, "?")
+	if hasPrefix {
+		return prop[1:]
+	}
+	return prop
+}
+
+// Returns an array of values from the {{ .structName }} instance as designated
+// in the props array.  The string of the props array should conform to the
+// possible named value syntax which sqlite accepts.
+// (See: https://www.sqlite.org/c3ref/bind_parameter_name.html and
+// https://www.sqlite.org/c3ref/bind_blob.html)
+func (e *{{ .structName }}) Parameters(props []string) (rs []interface{}, err error) {
+	rs = make([]interface{}, len(props))
+	for i,p := range props {
+		p = __removePrefix(p)
+		switch p { {{ range .names }}
+		case "{{ . }}":
+			rs[i] = e.{{ . }}{{ end }}
+		default:
+			err = errors.New(fmt.Sprintf("{{ .structName }} doesn't have a property named: %s", p))
+		}
+	}
+	return rs, err
+}
 
 // Fills pointer array with pointers to receiver fields.
 func (e *{{ .structName }}) FromColumns(cols []string, ptrs []interface{}) error {
@@ -43,4 +74,26 @@ func (e *{{ .structName }}) FromColumns(cols []string, ptrs []interface{}) error
 		}
 	}
 	return nil
+}
+
+func To{{ .structName }}Rows(rows *sql.Rows) ([]*{{ .structName }}, error) {
+	cols, err := rows.Columns()
+	if err != nil {
+		return nil, err
+	}
+
+	ptrs := make([]interface{}, len(cols))
+	w := make([]*{{ .structName }}, 0)
+
+	for rows.Next() {
+		e := &{{ .structName }}{}
+		if err := e.FromColumns(cols, ptrs); err != nil {
+			return nil, err
+		}
+		if err := rows.Scan(ptrs...); err != nil {
+			return nil, err
+		}
+		w = append(w, e)
+	}
+	return w, nil
 }

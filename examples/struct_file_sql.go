@@ -34,6 +34,56 @@ func __snakeToPascal(sk string) string {
 	return strings.Join(parts, "")
 }
 
+// For known named parameter types, this strips known prefixes.
+func __removePrefix(prop string) string {
+	hasPrefix := strings.HasPrefix(prop, "$") ||
+		strings.HasPrefix(prop, ":") ||
+		strings.HasPrefix(prop, "@") ||
+		strings.HasPrefix(prop, "?")
+	if hasPrefix {
+		return prop[1:]
+	}
+	return prop
+}
+
+// Returns an array of values from the Effort instance as designated
+// in the props array.  The string of the props array should conform to the
+// possible named value syntax which sqlite accepts.
+// (See: https://www.sqlite.org/c3ref/bind_parameter_name.html and
+// https://www.sqlite.org/c3ref/bind_blob.html)
+func (e *Effort) Parameters(props []string) (rs []interface{}, err error) {
+	rs = make([]interface{}, len(props))
+	for i,p := range props {
+		p = __removePrefix(p)
+		switch p { 
+		case "Id":
+			rs[i] = e.Id
+		case "Title":
+			rs[i] = e.Title
+		case "Summary":
+			rs[i] = e.Summary
+		case "Description":
+			rs[i] = e.Description
+		case "CreatedBy":
+			rs[i] = e.CreatedBy
+		case "CreatedOn":
+			rs[i] = e.CreatedOn
+		case "UpdatedBy":
+			rs[i] = e.UpdatedBy
+		case "UpdatedOn":
+			rs[i] = e.UpdatedOn
+		case "OwnedBy":
+			rs[i] = e.OwnedBy
+		case "State":
+			rs[i] = e.State
+		case "RecordStatus":
+			rs[i] = e.RecordStatus
+		default:
+			err = errors.New(fmt.Sprintf("Effort doesn't have a property named: %s", p))
+		}
+	}
+	return rs, err
+}
 
 // Fills pointer array with pointers to receiver fields.
 func (e *Effort) FromColumns(cols []string, ptrs []interface{}) error {

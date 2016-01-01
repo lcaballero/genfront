@@ -2,7 +2,7 @@ package main
 
 import (
 	"os"
-	"genfront/cli"
+	"github.com/lcaballero/genfront/cli"
 )
 
 func main() {
