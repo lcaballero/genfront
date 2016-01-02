@@ -1,17 +1,18 @@
 package frontmatter
 
 import (
-	cmd "github.com/codegangsta/cli"
-	"log"
-	"errors"
-	"io/ioutil"
 	"bufio"
 	"bytes"
+	"errors"
 	"fmt"
-	"os"
 	"html/template"
-	"github.com/lcaballero/genfront/process"
+	"io/ioutil"
+	"log"
+	"os"
+
+	cmd "github.com/codegangsta/cli"
 	"github.com/lcaballero/genfront/cli"
+	"github.com/lcaballero/genfront/process"
 )
 
 const (
@@ -24,8 +25,9 @@ const (
 // generating over a front matter file.
 func NewFrontMatterProcessor(c *cmd.Context) {
 	p := &FrontMatterProcess{
-		CliConf: cli.NewCliConf(c),
+		CliConf:  cli.NewCliConf(c),
 		portions: &Portions{},
+		Env:      process.NewEnv(),
 	}
 
 	err := p.Validate()
@@ -38,6 +40,7 @@ func NewFrontMatterProcessor(c *cmd.Context) {
 type FrontMatterProcess struct {
 	portions *Portions
 	*cli.CliConf
+	*process.Env
 }
 
 func (p *FrontMatterProcess) Validate() error {
@@ -49,22 +52,23 @@ func (p *FrontMatterProcess) Validate() error {
 }
 
 func (p *FrontMatterProcess) debug(tpl *template.Template) {
-	fmt.Println()
-	fmt.Println("ENV: ")
-	fmt.Println(process.Sep())
-	process.ShowEnvironment()
-	fmt.Println()
-	fmt.Println(p.CliConf)
-	fmt.Println(process.Sep())
+	w := os.Stdout
+	fmt.Fprintf(w, "%s\n", p.Sep())
+	p.ShowEnvironment(w)
+	fmt.Fprintf(w, "%s\n", p.Sep())
+	fmt.Fprintln(w, p.CliConf)
+	fmt.Fprintf(w, "%s\n", p.Sep())
 
 	if p.Noop() {
-		fmt.Println("Generated source code supressed with --noop")
+		fmt.Fprintln(w, "Generated source code supressed with --noop")
 	} else {
-		tpl.Execute(os.Stdout, p.portions.Settings())
+		tpl.Execute(w, p.Env.ToMap())
 	}
 }
 
 func (p *FrontMatterProcess) Run() {
+	log.Printf("Reading input file: %s", p.InputFile())
+
 	b, err := ioutil.ReadFile(p.InputFile())
 	if err != nil {
 		log.Fatal(err)
@@ -76,21 +80,27 @@ func (p *FrontMatterProcess) Run() {
 		log.Fatal(err)
 	}
 
-	tpl,err := p.portions.CreateTemplate()
+	log.Println("Creating template")
+
+	p.AddSettings(p.portions.FrontMatter)
+
+	tpl, err := p.Env.CreateTemplate(p.portions.Template)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	if p.Debug() {
+		log.Printf("Skipping writing output file: %s", p.OutputFile())
 		p.debug(tpl)
 	} else {
+		log.Printf("Writing output file: %s", p.OutputFile())
+
 		file, err := os.Create(p.OutputFile())
 		if err == nil {
 			defer file.Close()
-			tpl.Execute(file, p.portions.Settings())
+			tpl.Execute(file, p.Env.ToMap())
 		} else {
 			log.Fatal(err)
 		}
 	}
 }
-

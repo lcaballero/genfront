@@ -1,12 +1,12 @@
 package frontmatter
-   
+
 import (
-	. "github.com/smartystreets/goconvey/convey"
-	"testing"
-	"bytes"
 	"bufio"
+	"bytes"
 	"strings"
-	"github.com/lcaballero/genfront/process"
+	"testing"
+
+	. "github.com/smartystreets/goconvey/convey"
 )
 
 func TestFrontmatter(t *testing.T) {
@@ -26,11 +26,11 @@ names:
 </ul>
 `
 		reader := bufio.NewReader(bytes.NewBufferString(s))
-		portions := &process.Portions{}
+		portions := &Portions{}
 		err := portions.Read(reader)
 		So(err, ShouldBeNil)
 
-		tpl, err := portions.Render()
+		tpl, err := portions.CreateTemplate()
 		buf := bytes.NewBufferString("")
 		tpl.Execute(buf, portions.Settings())
 		rendered := buf.String()
@@ -49,7 +49,7 @@ names:
 2
 `
 		reader := bufio.NewReader(bytes.NewBufferString(s))
-		portions := &process.Portions{}
+		portions := &Portions{}
 		err := portions.Read(reader)
 
 		So(err, ShouldBeNil)
@@ -58,5 +58,3 @@ names:
 		So(portions.Template, ShouldEqual, "2")
 	})
 }
-
-

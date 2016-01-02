@@ -1,36 +1,40 @@
 package fields
 
 import (
-	"go/token"
-	"go/parser"
-	"go/ast"
 	"fmt"
-	cmd "github.com/codegangsta/cli"
-	"path/filepath"
+	"go/ast"
+	"go/parser"
+	"go/token"
 	"html/template"
 	"log"
 	"os"
+	"path/filepath"
 	"strings"
-	"github.com/lcaballero/genfront/process"
+
+	cmd "github.com/codegangsta/cli"
 	"github.com/lcaballero/genfront/cli"
+	"github.com/lcaballero/genfront/process"
 )
 
 type GenState int
+
 const (
 	InitialFieldsGen GenState = 1
-	HasComment GenState = 2
+	HasComment       GenState = 2
 )
 
 type FieldsProcessor struct {
 	*cli.CliConf
+	*process.Env
 }
 
-func NewFieldProcessor(c *cmd.Context) {
+func RunFieldProcessor(c *cmd.Context) {
 	fp := &FieldsProcessor{
 		CliConf: cli.NewCliConf(c),
+		Env:     process.NewEnv(),
 	}
 
-	process.ShowEnvironment()
+	fp.ShowEnvironment(os.Stdout)
 	fp.Load()
 }
 
@@ -39,7 +43,7 @@ func (fp *FieldsProcessor) Validate() bool {
 }
 
 func (fp *FieldsProcessor) Load() {
-	env := process.BuildEnv()
+	env := fp.AddEnv()
 	cwd := env.String("CWD")
 	gofile := env.String("GOFILE")
 	filename := filepath.Join(cwd, gofile)
@@ -82,7 +86,7 @@ func (fp *FieldsProcessor) Load() {
 func deriveOutfile(gen string) string {
 	ext := filepath.Ext(gen)
 	base := filepath.Base(gen)
-	noext := base[0:len(base) - len(ext)]
+	noext := base[0 : len(base)-len(ext)]
 	f := fmt.Sprintf("%s_tomap.go", noext)
 	return f
 }
@@ -98,17 +102,17 @@ func (p *FieldsProcessor) outfile(gen string) string {
 }
 
 func (p *FieldsProcessor) Render() (*template.Template, error) {
-	tpl,err := process.Asset("struct_sql_tomap.fm")
+	tpl, err := process.Asset("struct_sql_tomap.fm")
 	if err != nil {
 		return nil, err
 	}
 	fm := strings.TrimLeft(string(tpl), " \n\r\t")
-	return template.New("").Funcs(process.BuildFuncMap()).Parse(fm)
+	return template.New("").Funcs(p.BuildFuncMap()).Parse(fm)
 }
 
 func (fp *FieldsProcessor) State(filename, structName string, stc *ast.StructType) {
 	names := []string{}
-	for _,f := range stc.Fields.List {
+	for _, f := range stc.Fields.List {
 		for _, name := range f.Names {
 			names = append(names, name.Name)
 		}
@@ -118,15 +122,16 @@ func (fp *FieldsProcessor) State(filename, structName string, stc *ast.StructTyp
 	if err != nil {
 		log.Fatal(err)
 	}
-	env := process.BuildEnv()
-	env = process.BuildData(env)
-	env["names"] = names
-	env["structName"] = structName
+	fp.AddEnv()
+
+	//	env = fp.BuildData(env)
+	fp.Add("names", names)
+	fp.Add("structName", structName)
 
 	file, err := os.Create(fp.outfile(filename))
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer file.Close()
-	tpl.Execute(file, env)
+	tpl.Execute(file, fp.Env.ToMap())
 }

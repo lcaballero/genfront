@@ -1,37 +1,18 @@
 package frontmatter
 
 import (
-	"bytes"
 	"bufio"
-	"html/template"
+	"bytes"
 	"io"
 	"strings"
-	"github.com/spf13/viper"
-	"github.com/lcaballero/genfront/process"
 )
-
-
 
 type Portions struct {
 	FrontMatter string
-	Template string
-	Error error
-}
-
-func (p *Portions) Settings() map[string]interface{} {
-	v := viper.New()
-	v.SetConfigType("yaml")
-	v.ReadConfig(bytes.NewBufferString(p.FrontMatter))
-
-	return process.BuildData(v.AllSettings())
-}
-
-func (p *Portions) CreateTemplate() (*template.Template, error) {
-	return template.New("FrontMatterProcessor").Funcs(process.BuildFuncMap()).Parse(p.Template)
+	Template    string
 }
 
 func (p *Portions) Read(r *bufio.Reader) error {
-
 	fm := bytes.NewBuffer([]byte{})
 	tp := bytes.NewBuffer([]byte{})
 	state := Initial
@@ -71,4 +52,3 @@ func (p *Portions) Read(r *bufio.Reader) error {
 
 	return nil
 }
-

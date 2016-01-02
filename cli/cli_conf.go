@@ -1,16 +1,17 @@
 package cli
 
 import (
-	cmd "github.com/codegangsta/cli"
 	"fmt"
+
+	cmd "github.com/codegangsta/cli"
 )
 
 const (
-	line = "line"
-	input = "input"
+	line   = "line"
+	input  = "input"
 	output = "output"
-	debug = "debug"
-	noop = "noop"
+	debug  = "debug"
+	noop   = "noop"
 )
 
 type CliConf struct {
@@ -19,7 +20,7 @@ type CliConf struct {
 
 func NewCliConf(c *cmd.Context) *CliConf {
 	return &CliConf{
-		ctx:c,
+		ctx: c,
 	}
 }
 
@@ -54,16 +55,14 @@ func (p *CliConf) HasNoop() bool {
 }
 
 func (p *CliConf) String() string {
-	return fmt.Sprintf(`
-		Line: %d
-		InputFile: %s
-		OutputFile: %s
-		Noop: %t
-		Debug: %t
-	`,
-	p.Line(),
-	p.InputFile(),
-	p.OutputFile(),
-	p.Noop(),
-	p.Debug())
+	return fmt.Sprintf(`Line: %d
+InputFile: %s
+OutputFile: %s
+Noop: %t
+Debug: %t`,
+		p.Line(),
+		p.InputFile(),
+		p.OutputFile(),
+		p.Noop(),
+		p.Debug())
 }
