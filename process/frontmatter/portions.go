@@ -1,49 +1,44 @@
-package process
+package frontmatter
+
 import (
-	"bytes"
 	"bufio"
-	"html/template"
+	"bytes"
 	"io"
-	"log"
 	"strings"
-	"github.com/spf13/viper"
+	"log"
 )
-
-
 
 type Portions struct {
 	FrontMatter string
-	Template string
-	Error error
-}
-
-func (p *Portions) Settings() map[string]interface{} {
-	v := viper.New()
-	v.SetConfigType("yaml")
-	v.ReadConfig(bytes.NewBufferString(p.FrontMatter))
-
-	return BuildData(v.AllSettings())
-}
-
-func (p *Portions) Render() (*template.Template, error) {
-	return template.New("FrontMatterProcessor").Funcs(BuildFuncMap()).Parse(p.Template)
+	Template    string
 }
 
 func (p *Portions) Read(r *bufio.Reader) error {
-
 	fm := bytes.NewBuffer([]byte{})
 	tp := bytes.NewBuffer([]byte{})
 	state := Initial
 	var buf *bytes.Buffer = fm
 	line, prefix, err := r.ReadLine()
 
+	if err != nil {
+		return err
+	}
+
+	log.Println("Reading FrontMatter in FrontMatter file.")
+	n := 0
 	for err == nil && line != nil {
+		n++
+		log.Printf("Line number: %d\n", n)
 		if string(line) == "---" {
 			switch state {
 			case Initial:
+				if n > 1 {
+					log.Printf("Normally usage requires '---' on first line, but found on line: %d\n", n)
+				}
 				state = FrontMatter
 				buf = fm
 			case FrontMatter:
+				log.Println("Reading Template in FrontMatter file.")
 				state = Template
 				buf = tp
 			default:
@@ -61,7 +56,7 @@ func (p *Portions) Read(r *bufio.Reader) error {
 		if err != nil && err == io.EOF {
 			break
 		} else if err != nil {
-			log.Fatal(err)
+			return err
 		}
 	}
 
@@ -70,4 +65,3 @@ func (p *Portions) Read(r *bufio.Reader) error {
 
 	return nil
 }
-

@@ -11,13 +11,12 @@ func toPascal(s string) string {
 	return fmt.Sprintf("%s%s", start, end)
 }
 
-
 func SnakeToPascal(sk string) string {
 	if len(sk) <= 1 {
 		return strings.ToUpper(sk)
 	}
 	parts := strings.Split(sk, "_")
-	for i,p := range parts {
+	for i, p := range parts {
 		parts[i] = strings.Title(p)
 	}
 	return strings.Join(parts, "")

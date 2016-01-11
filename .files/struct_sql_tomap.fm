@@ -1,5 +1,5 @@
-package {{ .ENV.GOPACKAGE }}
-{{ .ENV.GEN_TAGLINE }}
+package {{ .GOPACKAGE }}
+{{ .GEN_TAGLINE }}
 
 import (
 	"database/sql"

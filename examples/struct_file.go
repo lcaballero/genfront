@@ -1,23 +1,23 @@
 package examples
 
-
-//go:generate genfront fields --output struct_file_sql.go --line $GOLINE
+//go:generate genfront fields --output struct_file_sql.go --template ../.files/dump_struct.fm --line $GOLINE --noop --debug
 type Effort struct {
-	Id int
-	Title string
-	Summary string
-	Description string
-	CreatedBy int
-	CreatedOn string
-	UpdatedBy int
-	UpdatedOn string
-	OwnedBy int
-	State ScrumState
+	Id           int
+	Title        string
+	Summary      string
+	Description  string
+	CreatedBy    int
+	CreatedOn    string
+	UpdatedBy    int
+	UpdatedOn    string
+	OwnedBy      int
+	State        ScrumState
 	RecordStatus RecordStatus
 }
 
 type ScrumState string
 type RecordStatus int
+
 const (
 	InProgress ScrumState = "InProgress"
 )
@@ -26,7 +26,7 @@ const (
 )
 
 type User struct {
-	Id int
+	Id       int
 	Username string
 	Password string
 }

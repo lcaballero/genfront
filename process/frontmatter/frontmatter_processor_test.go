@@ -1,11 +1,13 @@
-package process
-   
+package frontmatter
+
 import (
-	. "github.com/smartystreets/goconvey/convey"
-	"testing"
-	"bytes"
 	"bufio"
+	"bytes"
 	"strings"
+	"testing"
+
+	. "github.com/smartystreets/goconvey/convey"
+	"github.com/lcaballero/genfront/process"
 )
 
 func TestFrontmatter(t *testing.T) {
@@ -29,9 +31,12 @@ names:
 		err := portions.Read(reader)
 		So(err, ShouldBeNil)
 
-		tpl, err := portions.Render()
+		env := process.NewEnv()
+		tpl, err := env.CreateTemplate(s)
+		So(err, ShouldBeNil)
+
 		buf := bytes.NewBufferString("")
-		tpl.Execute(buf, portions.Settings())
+		tpl.Execute(buf, env.ToMap())
 		rendered := buf.String()
 
 		So(err, ShouldBeNil)
@@ -57,5 +62,3 @@ names:
 		So(portions.Template, ShouldEqual, "2")
 	})
 }
-
-

@@ -2,70 +2,82 @@ package cli
 
 import (
 	cmd "github.com/codegangsta/cli"
-	"github.com/lcaballero/genfront/process"
 )
 
-var usage = "Converts processes a front matter file with yaml data and handlebars template."
+const (
+	DefaultFieldTemplate = "struct_sql_tomap.fm"
+	usage = "Provides various Go generation utilities."
+)
 
 
-func NewCli() *cmd.App {
+type Processor func(c *cmd.Context)
+type Processors struct {
+	FrontMatter, FieldProcessor Processor
+}
+
+func NewCli(p *Processors) *cmd.App {
 	app := cmd.NewApp()
 	app.Name = "genfront"
 	app.Version = "0.0.1"
 	app.Usage = usage
 	app.Commands = []cmd.Command{
-		front(),
-		fields(),
+		frontCommand(p.FrontMatter),
+		fieldsCommand(p.FieldProcessor),
 	}
 	return app
 }
 
-func fields() cmd.Command {
+func fieldsCommand(p Processor) cmd.Command {
 	custom := []cmd.Flag{
 		cmd.StringFlag{
-			Name: "output",
+			Name:  "output",
 			Usage: "Name of source-code output file",
 		},
+		cmd.StringFlag{
+			Name:  "template",
+			Usage: "Optional value that specifies alternative template for processing",
+			Value: DefaultFieldTemplate,
+		},
 		cmd.IntFlag{
-			Name: "line",
+			Name:  "line",
 			Usage: "Line number of this instance.",
 		},
 	}
 	return cmd.Command{
-		Name: "fields",
-		Usage: "Process struct fields for sql io.",
-		Action: process.NewFieldProcessor,
-		Flags: flags(debug(), custom...),
+		Name:   "fields",
+		Usage:  "Process struct fields for sql io.",
+		Action: p,
+		Flags:  flags(debugFlag(), custom...),
 	}
 }
 
-func front() cmd.Command {
+func frontCommand(p Processor) cmd.Command {
 	custom := []cmd.Flag{
 		cmd.StringFlag{
-			Name: "input",
+			Name:  "input",
 			Usage: "Front-matter file to process.",
 		},
 		cmd.StringFlag{
-			Name: "output",
+			Name:  "output",
 			Usage: "Name of source-code output file.",
 		},
 	}
 	return cmd.Command{
-		Name: "front",
-		Usage: "Runs generator based on a front-matter file.",
-		Flags: flags(debug(), custom...),
-		Action: process.NewFrontMatterProcessor,
+		Name:   "front",
+		Usage:  "Runs generator based on a front-matter file.",
+		Flags:  flags(debugFlag(), custom...),
+		Action: p,
 	}
 }
 
-func debug() []cmd.Flag {
+func debugFlag() []cmd.Flag {
 	return []cmd.Flag{
 		cmd.BoolFlag{
-			Name: "no-source",
-			Usage: "Hides generated source when using debug flag.",
+			Name:  "noop",
+			Usage: "Doesn't generate source. Use with the --debug flag.",
 		},
 		cmd.BoolFlag{
-			Name: "debug",
+			Name:  "debug",
 			Usage: "Process file, output to std-out, and show data points",
 		},
 	}
