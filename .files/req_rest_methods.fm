@@ -9,8 +9,8 @@ methods:
   - TRACE
   - CONNECT
 ---
-package {{ .ENV.GOPACKAGE }}
-{{ .ENV.GEN_TAGLINE }}
+package {{ .GOPACKAGE }}
+{{ .GEN_TAGLINE }}
 // {{ getenv "GOLINE" }}
 
 const (

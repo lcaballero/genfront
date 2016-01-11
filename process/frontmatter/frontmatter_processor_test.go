@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	. "github.com/smartystreets/goconvey/convey"
+	"github.com/lcaballero/genfront/process"
 )
 
 func TestFrontmatter(t *testing.T) {
@@ -30,9 +31,12 @@ names:
 		err := portions.Read(reader)
 		So(err, ShouldBeNil)
 
-		tpl, err := portions.CreateTemplate()
+		env := process.NewEnv()
+		tpl, err := env.CreateTemplate(s)
+		So(err, ShouldBeNil)
+
 		buf := bytes.NewBufferString("")
-		tpl.Execute(buf, portions.Settings())
+		tpl.Execute(buf, env.ToMap())
 		rendered := buf.String()
 
 		So(err, ShouldBeNil)

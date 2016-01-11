@@ -1,6 +1,6 @@
 package examples
 
-//go:generate genfront fields --output struct_file_sql.go --line $GOLINE
+//go:generate genfront fields --output struct_file_sql.go --template ../.files/dump_struct.fm --line $GOLINE --noop --debug
 type Effort struct {
 	Id           int
 	Title        string

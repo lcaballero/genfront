@@ -4,8 +4,6 @@ import (
 	"bufio"
 	"bytes"
 	"errors"
-	"fmt"
-	"html/template"
 	"io/ioutil"
 	"log"
 	"os"
@@ -51,56 +49,39 @@ func (p *FrontMatterProcess) Validate() error {
 	}
 }
 
-func (p *FrontMatterProcess) debug(tpl *template.Template) {
-	w := os.Stdout
-	fmt.Fprintf(w, "%s\n", p.Sep())
-	p.ShowEnvironment(w)
-	fmt.Fprintf(w, "%s\n", p.Sep())
-	fmt.Fprintln(w, p.CliConf)
-	fmt.Fprintf(w, "%s\n", p.Sep())
-
-	if p.Noop() {
-		fmt.Fprintln(w, "Generated source code supressed with --noop")
-	} else {
-		tpl.Execute(w, p.Env.ToMap())
-	}
-}
-
 func (p *FrontMatterProcess) Run() {
 	log.Printf("Reading input file: %s", p.InputFile())
-
 	b, err := ioutil.ReadFile(p.InputFile())
 	if err != nil {
 		log.Fatal(err)
 	}
-	reader := bufio.NewReader(bytes.NewBuffer(b))
 
-	err = p.portions.Read(reader)
+	log.Println("Separating embedded front-matter")
+	err = p.portions.Read(bufio.NewReader(bytes.NewBuffer(b)))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	log.Println("Parsing front-matter")
+	_, err = p.AddSettings(p.portions.FrontMatter)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	log.Println("Creating template")
-
-	p.AddSettings(p.portions.FrontMatter)
-
 	tpl, err := p.Env.CreateTemplate(p.portions.Template)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	if p.Debug() {
-		log.Printf("Skipping writing output file: %s", p.OutputFile())
-		p.debug(tpl)
-	} else {
-		log.Printf("Writing output file: %s", p.OutputFile())
+	p.Env.Debug(tpl, p.CliConf)
 
-		file, err := os.Create(p.OutputFile())
-		if err == nil {
-			defer file.Close()
-			tpl.Execute(file, p.Env.ToMap())
-		} else {
-			log.Fatal(err)
-		}
+	log.Printf("Writing output file: %s", p.OutputFile())
+	file, err := os.Create(p.OutputFile())
+	if err == nil {
+		defer file.Close()
+		tpl.Execute(file, p.Env.ToMap())
+	} else {
+		log.Fatal(err)
 	}
 }

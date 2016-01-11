@@ -14,6 +14,7 @@ import (
 	cmd "github.com/codegangsta/cli"
 	"github.com/lcaballero/genfront/cli"
 	"github.com/lcaballero/genfront/process"
+	"io/ioutil"
 )
 
 type GenState int
@@ -34,7 +35,6 @@ func RunFieldProcessor(c *cmd.Context) {
 		Env:     process.NewEnv(),
 	}
 
-	fp.ShowEnvironment(os.Stdout)
 	fp.Load()
 }
 
@@ -43,20 +43,17 @@ func (fp *FieldsProcessor) Validate() bool {
 }
 
 func (fp *FieldsProcessor) Load() {
-	env := fp.AddEnv()
-	cwd := env.String("CWD")
-	gofile := env.String("GOFILE")
-	filename := filepath.Join(cwd, gofile)
-
+	env := fp.AddGoEnvironment()
+	filename := env.Codefile()
 	fset := token.NewFileSet()
+
+	log.Printf("Parsing input file %s\n", filename)
 	f, err := parser.ParseFile(fset, filename, nil, parser.ParseComments)
 	if err != nil {
 		panic(err)
 	}
 
 	line := fp.Line()
-	fmt.Printf("GOLINE: %d\n", line)
-
 	state := InitialFieldsGen
 	structName := ""
 
@@ -74,7 +71,6 @@ func (fp *FieldsProcessor) Load() {
 			structName = x.Name
 		case *ast.StructType:
 			if state == HasComment {
-				fmt.Println("structName", structName)
 				fp.State(filename, structName, x)
 				state = InitialFieldsGen
 			}
@@ -102,10 +98,23 @@ func (p *FieldsProcessor) outfile(gen string) string {
 }
 
 func (p *FieldsProcessor) Render() (*template.Template, error) {
-	tpl, err := process.Asset("struct_sql_tomap.fm")
+	getTemplate := func() ([]byte, error) {
+		return process.Asset(cli.DefaultFieldTemplate)
+	}
+	if p.CliConf.Template() != "" && p.Env.Exists(p.Env.RelativeFile(p.CliConf.Template())) {
+		log.Printf("Using specified template: %s\n", p.CliConf.Template())
+		getTemplate = func() ([]byte, error) {
+			return ioutil.ReadFile(p.Env.RelativeFile(p.CliConf.Template()))
+		}
+	} else {
+		log.Printf("Using default template: %s\n", cli.DefaultFieldTemplate)
+	}
+
+	tpl, err := getTemplate()
 	if err != nil {
 		return nil, err
 	}
+
 	fm := strings.TrimLeft(string(tpl), " \n\r\t")
 	return template.New("").Funcs(p.BuildFuncMap()).Parse(fm)
 }
@@ -122,16 +131,18 @@ func (fp *FieldsProcessor) State(filename, structName string, stc *ast.StructTyp
 	if err != nil {
 		log.Fatal(err)
 	}
-	fp.AddEnv()
 
-	//	env = fp.BuildData(env)
 	fp.Add("names", names)
+	fp.Add("GOLINE", fp.Line())
 	fp.Add("structName", structName)
+
+	fp.Env.Debug(tpl, fp.CliConf)
 
 	file, err := os.Create(fp.outfile(filename))
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer file.Close()
+
 	tpl.Execute(file, fp.Env.ToMap())
 }

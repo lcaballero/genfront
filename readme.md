@@ -1,21 +1,22 @@
 # Overview
 
-`genfront` is a code generating tool intended for use with the `go generate` tool.
-The tool is intended to process [Front Matter][Front Matter] to generate code
-for the package.  Of course, many other tools could be used to generate source
-code, but this tool specifically uses [Yaml][Yaml] and Go template package in the
-Go sdk to create new source code.
+`genfront` is a code generating tool.  `genfront` provides several
+subcommands for different generating patterns.  See the usage below.
 
+## Subcommands
 
-## Usage
+#### front
+Parses a front-matter file and renders the template therein providing
+the static embedded yaml data.
 
-`genfront` works by combining a `go` comment and a front matter file.  With the
-comment below `genfront` would generate the file `req_methods.go` during a 
-`go generate` call.
+#### fields
+Placed above a struct, it provides struct fields as data to the
+template for rendering.
 
-*Go Comment in Go File*
+## Example Usage
+
 ```
-//go:generate genfront --input req_methods.fm --output req_methods.go
+//go:generate genfront front --input req_methods.fm --output req_methods.go
 ```
 
 *req_methods.fm*
@@ -61,6 +62,7 @@ is lower-cased.
 
 - Test the behavior around not having front matter, or improperly formed front
   matter file.
+- Add more helper methods for rendering. 
 
 ## License
 

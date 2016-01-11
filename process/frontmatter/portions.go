@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"io"
 	"strings"
+	"log"
 )
 
 type Portions struct {
@@ -19,13 +20,25 @@ func (p *Portions) Read(r *bufio.Reader) error {
 	var buf *bytes.Buffer = fm
 	line, prefix, err := r.ReadLine()
 
+	if err != nil {
+		return err
+	}
+
+	log.Println("Reading FrontMatter in FrontMatter file.")
+	n := 0
 	for err == nil && line != nil {
+		n++
+		log.Printf("Line number: %d\n", n)
 		if string(line) == "---" {
 			switch state {
 			case Initial:
+				if n > 1 {
+					log.Printf("Normally usage requires '---' on first line, but found on line: %d\n", n)
+				}
 				state = FrontMatter
 				buf = fm
 			case FrontMatter:
+				log.Println("Reading Template in FrontMatter file.")
 				state = Template
 				buf = tp
 			default:

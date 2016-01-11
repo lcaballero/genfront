@@ -4,7 +4,11 @@ import (
 	cmd "github.com/codegangsta/cli"
 )
 
-var usage = "Provides various Go generation utilities."
+const (
+	DefaultFieldTemplate = "struct_sql_tomap.fm"
+	usage = "Provides various Go generation utilities."
+)
+
 
 type Processor func(c *cmd.Context)
 type Processors struct {
@@ -28,6 +32,11 @@ func fieldsCommand(p Processor) cmd.Command {
 		cmd.StringFlag{
 			Name:  "output",
 			Usage: "Name of source-code output file",
+		},
+		cmd.StringFlag{
+			Name:  "template",
+			Usage: "Optional value that specifies alternative template for processing",
+			Value: DefaultFieldTemplate,
 		},
 		cmd.IntFlag{
 			Name:  "line",
@@ -77,3 +86,4 @@ func debugFlag() []cmd.Flag {
 func flags(b []cmd.Flag, flags ...cmd.Flag) []cmd.Flag {
 	return append(b, flags...)
 }
+

@@ -10,6 +10,8 @@ import (
 	"strings"
 
 	"github.com/spf13/viper"
+	"path/filepath"
+	"github.com/lcaballero/genfront/cli"
 )
 
 var EnvVars = []string{
@@ -29,7 +31,7 @@ func NewEnv() *Env {
 	env := &Env{
 		pairs: make(map[string]interface{}),
 	}
-	env.AddEnv()
+	env.AddGoEnvironment()
 	return env
 }
 func (e *Env) ToMap() map[string]interface{} {
@@ -49,6 +51,7 @@ func (env *Env) AddSettings(frontmatter string) (*Env, error) {
 	v := viper.New()
 	v.SetConfigType("yaml")
 	err := v.ReadConfig(bytes.NewBufferString(frontmatter))
+	env.AddPairs(v.AllSettings())
 	return env, err
 }
 func (e *Env) Sep() string {
@@ -77,7 +80,25 @@ func (env *Env) String(key string) string {
 	}
 }
 
-func (env *Env) AddEnv() *Env {
+func (env *Env) Codefile() string {
+	cwd := env.String("CWD")
+	gofile := env.String("GOFILE")
+	return filepath.Join(cwd, gofile)
+}
+
+func (env *Env) RelativeFile(f string) string {
+	cwd := env.String("CWD")
+	return filepath.Join(cwd, f)
+}
+
+func (env *Env) Exists(file string) bool {
+	if _, err := os.Stat(file); os.IsNotExist(err) {
+		return false
+	}
+	return true
+}
+
+func (env *Env) AddGoEnvironment() *Env {
 	for _, e := range EnvVars {
 		env.Add(e, os.Getenv(e))
 	}
@@ -108,4 +129,26 @@ func (env *Env) BuildFuncMap() template.FuncMap {
 
 func (env *Env) CreateTemplate(tpl string) (*template.Template, error) {
 	return template.New("FrontMatterProcessor").Funcs(env.BuildFuncMap()).Parse(tpl)
+}
+
+func (p *Env) ShowDebug(tpl *template.Template, conf *cli.CliConf) {
+	w := os.Stdout
+	fmt.Fprintf(w, "%s\n", p.Sep())
+	p.ShowEnvironment(w)
+	fmt.Fprintf(w, "%s\n", p.Sep())
+	fmt.Fprintln(w, conf)
+	fmt.Fprintf(w, "%s\n", p.Sep())
+
+	tpl.Execute(w, p.ToMap())
+	fmt.Fprintln(w)
+}
+
+func (p *Env) Debug(tpl *template.Template, conf *cli.CliConf) {
+	if conf.Debug() {
+		p.ShowDebug(tpl, conf)
+	}
+	if conf.Noop() {
+		log.Printf("Skipping writing output file: %s", conf.OutputFile())
+		os.Exit(1)
+	}
 }
