@@ -6,8 +6,8 @@ import (
 	"strings"
 	"testing"
 
-	. "github.com/smartystreets/goconvey/convey"
 	"github.com/lcaballero/genfront/process"
+	. "github.com/smartystreets/goconvey/convey"
 )
 
 func TestFrontmatter(t *testing.T) {
