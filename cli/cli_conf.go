@@ -4,15 +4,17 @@ import (
 	"fmt"
 
 	cmd "github.com/codegangsta/cli"
+	"strings"
 )
 
 const (
-	line   = "line"
-	input  = "input"
-	output = "output"
-	debug  = "debug"
-	noop   = "noop"
+	line     = "line"
+	input    = "input"
+	output   = "output"
+	debug    = "debug"
+	noop     = "noop"
 	template = "template"
+	datafile = "data-file"
 )
 
 type CliConf struct {
@@ -25,6 +27,14 @@ func NewCliConf(c *cmd.Context) *CliConf {
 	}
 }
 
+func (c *CliConf) DataFile() (string, string, error) {
+	spec := c.ctx.String(datafile)
+	split := strings.Split(":", spec)
+	if len(split) != 2 {
+		return "", "", fmt.Errorf("Expected key:data-file flag value, but found '%s'", spec)
+	}
+	return split[0], split[1], nil
+}
 func (c *CliConf) Line() int {
 	return c.ctx.Int(line)
 }
@@ -45,6 +55,9 @@ func (p *CliConf) Noop() bool {
 	return p.ctx.Bool(noop)
 }
 
+func (p *CliConf) HasDataFile() bool {
+	return p.ctx.IsSet(datafile)
+}
 func (p *CliConf) HasOutputFile() bool {
 	return p.ctx.IsSet(output)
 }
@@ -60,7 +73,6 @@ func (p *CliConf) HasNoop() bool {
 func (p *CliConf) HasTemplate() bool {
 	return p.ctx.IsSet(template)
 }
-
 
 func (p *CliConf) String() string {
 	return fmt.Sprintf(`Line: %d

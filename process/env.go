@@ -9,9 +9,11 @@ import (
 	"os"
 	"strings"
 
-	"github.com/spf13/viper"
 	"path/filepath"
+
 	"github.com/lcaballero/genfront/cli"
+	. "github.com/lcaballero/genfront/maybe"
+	"github.com/spf13/viper"
 )
 
 var EnvVars = []string{
@@ -148,7 +150,7 @@ func (p *Env) Debug(tpl *template.Template, conf *cli.CliConf) {
 		p.ShowDebug(tpl, conf)
 	}
 	if conf.Noop() {
-		log.Printf("Skipping writing output file: %s", conf.OutputFile())
+		log.Printf("Skipping writing output file: %s", JoinCwd(conf.OutputFile()))
 		os.Exit(1)
 	}
 }

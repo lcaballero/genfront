@@ -4,8 +4,8 @@ import (
 	"bufio"
 	"bytes"
 	"io"
-	"strings"
 	"log"
+	"strings"
 )
 
 type Portions struct {

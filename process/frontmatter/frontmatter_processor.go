@@ -11,6 +11,7 @@ import (
 	cmd "github.com/codegangsta/cli"
 	"github.com/lcaballero/genfront/cli"
 	"github.com/lcaballero/genfront/process"
+	. "github.com/lcaballero/genfront/maybe"
 )
 
 const (
@@ -50,7 +51,7 @@ func (p *FrontMatterProcess) Validate() error {
 }
 
 func (p *FrontMatterProcess) Run() {
-	log.Printf("Reading input file: %s", p.InputFile())
+	log.Printf("Reading input file: %s", JoinCwd(p.InputFile()))
 	b, err := ioutil.ReadFile(p.InputFile())
 	if err != nil {
 		log.Fatal(err)
@@ -76,7 +77,7 @@ func (p *FrontMatterProcess) Run() {
 
 	p.Env.Debug(tpl, p.CliConf)
 
-	log.Printf("Writing output file: %s", p.OutputFile())
+	log.Printf("Writing output file: %s", JoinCwd(p.OutputFile()))
 	file, err := os.Create(p.OutputFile())
 	if err == nil {
 		defer file.Close()

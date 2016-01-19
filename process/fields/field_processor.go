@@ -11,10 +11,12 @@ import (
 	"path/filepath"
 	"strings"
 
+	"io/ioutil"
+
 	cmd "github.com/codegangsta/cli"
 	"github.com/lcaballero/genfront/cli"
 	"github.com/lcaballero/genfront/process"
-	"io/ioutil"
+	. "github.com/lcaballero/genfront/maybe"
 )
 
 type GenState int
@@ -102,7 +104,7 @@ func (p *FieldsProcessor) Render() (*template.Template, error) {
 		return process.Asset(cli.DefaultFieldTemplate)
 	}
 	if p.CliConf.Template() != "" && p.Env.Exists(p.Env.RelativeFile(p.CliConf.Template())) {
-		log.Printf("Using specified template: %s\n", p.CliConf.Template())
+		log.Printf("Using specified template: %s\n", JoinCwd(p.CliConf.Template()))
 		getTemplate = func() ([]byte, error) {
 			return ioutil.ReadFile(p.Env.RelativeFile(p.CliConf.Template()))
 		}

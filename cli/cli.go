@@ -6,13 +6,12 @@ import (
 
 const (
 	DefaultFieldTemplate = "struct_sql_tomap.fm"
-	usage = "Provides various Go generation utilities."
+	usage                = "Provides various Go generation utilities."
 )
-
 
 type Processor func(c *cmd.Context)
 type Processors struct {
-	FrontMatter, FieldProcessor Processor
+	FrontMatter, FieldProcessor, PlainProcessor Processor
 }
 
 func NewCli(p *Processors) *cmd.App {
@@ -23,9 +22,35 @@ func NewCli(p *Processors) *cmd.App {
 	app.Commands = []cmd.Command{
 		frontCommand(p.FrontMatter),
 		fieldsCommand(p.FieldProcessor),
+		plainCommand(p.PlainProcessor),
 	}
 	return app
 }
+
+func plainCommand(p Processor) cmd.Command {
+	custom := []cmd.Flag{
+		cmd.StringFlag{
+			Name:  "output",
+			Usage: "Name of source-code output file",
+		},
+		cmd.StringFlag{
+			Name:  "template",
+			Usage: "Optional value that specifies alternative template for processing",
+			Value: DefaultFieldTemplate,
+		},
+		cmd.IntFlag{
+			Name:  "line",
+			Usage: "Line number of this instance.",
+		},
+	}
+	return cmd.Command{
+		Name:   "plain",
+		Usage:  "Process a template with Go environment.",
+		Action: p,
+		Flags:  flags(debugFlag(), custom...),
+	}
+}
+
 
 func fieldsCommand(p Processor) cmd.Command {
 	custom := []cmd.Flag{
@@ -86,4 +111,3 @@ func debugFlag() []cmd.Flag {
 func flags(b []cmd.Flag, flags ...cmd.Flag) []cmd.Flag {
 	return append(b, flags...)
 }
-
