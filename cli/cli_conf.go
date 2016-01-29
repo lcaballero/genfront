@@ -3,8 +3,9 @@ package cli
 import (
 	"fmt"
 
-	cmd "github.com/codegangsta/cli"
 	"strings"
+
+	cmd "github.com/codegangsta/cli"
 )
 
 const (
@@ -29,7 +30,7 @@ func NewCliConf(c *cmd.Context) *CliConf {
 
 func (c *CliConf) DataFile() (string, string, error) {
 	spec := c.ctx.String(datafile)
-	split := strings.Split(":", spec)
+	split := strings.Split(spec, ":")
 	if len(split) != 2 {
 		return "", "", fmt.Errorf("Expected key:data-file flag value, but found '%s'", spec)
 	}

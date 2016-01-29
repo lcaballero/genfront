@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-func toPascal(s string) string {
+func ToPascal(s string) string {
 	start := strings.ToUpper(s[0:1])
 	end := strings.ToLower(s[1:])
 	return fmt.Sprintf("%s%s", start, end)
@@ -20,4 +20,13 @@ func SnakeToPascal(sk string) string {
 		parts[i] = strings.Title(p)
 	}
 	return strings.Join(parts, "")
+}
+
+func ToSymbol(sys string) string {
+	parts := strings.Split(sys, " ")
+	for i := 0; i < len(parts); i++ {
+		parts[i] = ToPascal(parts[i])
+	}
+	header := strings.Join(parts, "")
+	return header
 }

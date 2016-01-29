@@ -1,10 +1,10 @@
 package maybe
+
 import (
 	"log"
 	"os"
 	"path/filepath"
 )
-
 
 func FatalString(s string, err error) string {
 	if err != nil {

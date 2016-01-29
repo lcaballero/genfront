@@ -51,7 +51,6 @@ func plainCommand(p Processor) cmd.Command {
 	}
 }
 
-
 func fieldsCommand(p Processor) cmd.Command {
 	custom := []cmd.Flag{
 		cmd.StringFlag{
@@ -104,6 +103,10 @@ func debugFlag() []cmd.Flag {
 		cmd.BoolFlag{
 			Name:  "debug",
 			Usage: "Process file, output to std-out, and show data points",
+		},
+		cmd.StringFlag{
+			Name:  "data-file",
+			Usage: "Provide data from a file.  Value should be name:file.ext",
 		},
 	}
 }

@@ -1,11 +1,11 @@
 package datafiles
 
-
 import (
 	"testing"
 
-	. "github.com/smartystreets/goconvey/convey"
 	"strconv"
+
+	. "github.com/smartystreets/goconvey/convey"
 )
 
 func TestDataFile(t *testing.T) {
@@ -33,4 +33,3 @@ func TestDataFile(t *testing.T) {
 		So(d.File, ShouldEqual, "./comma-sep.csv")
 	})
 }
-

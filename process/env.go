@@ -123,9 +123,10 @@ func (env *Env) AddGoEnvironment() *Env {
 
 func (env *Env) BuildFuncMap() template.FuncMap {
 	return template.FuncMap{
-		"title":  toPascal,
-		"lower":  strings.ToLower,
-		"getenv": os.Getenv,
+		"title":    ToPascal,
+		"lower":    strings.ToLower,
+		"toSymbol": ToSymbol,
+		"getenv":   os.Getenv,
 	}
 }
 

@@ -10,21 +10,22 @@ package process
 
 import (
 	"fmt"
-	"strings"
-	"os"
-	"time"
 	"io/ioutil"
+	"os"
 	"path/filepath"
+	"strings"
+	"time"
 )
+
 type asset struct {
 	bytes []byte
 	info  os.FileInfo
 }
 
 type bindataFileInfo struct {
-	name string
-	size int64
-	mode os.FileMode
+	name    string
+	size    int64
+	mode    os.FileMode
 	modTime time.Time
 }
 
@@ -64,7 +65,7 @@ func dump_structFm() (*asset, error) {
 	}
 
 	info := bindataFileInfo{name: "dump_struct.fm", size: 214, mode: os.FileMode(420), modTime: time.Unix(1452554674, 0)}
-	a := &asset{bytes: bytes, info:  info}
+	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
 
@@ -82,7 +83,7 @@ func plainFm() (*asset, error) {
 	}
 
 	info := bindataFileInfo{name: "plain.fm", size: 24, mode: os.FileMode(420), modTime: time.Unix(1452556973, 0)}
-	a := &asset{bytes: bytes, info:  info}
+	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
 
@@ -127,7 +128,7 @@ func req_rest_methodsFm() (*asset, error) {
 	}
 
 	info := bindataFileInfo{name: "req_rest_methods.fm", size: 477, mode: os.FileMode(420), modTime: time.Unix(1452550578, 0)}
-	a := &asset{bytes: bytes, info:  info}
+	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
 
@@ -242,7 +243,7 @@ func struct_sql_tomapFm() (*asset, error) {
 	}
 
 	info := bindataFileInfo{name: "struct_sql_tomap.fm", size: 2595, mode: os.FileMode(420), modTime: time.Unix(1452550503, 0)}
-	a := &asset{bytes: bytes, info:  info}
+	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
 
@@ -265,7 +266,7 @@ func Asset(name string) ([]byte, error) {
 // It simplifies safe initialization of global variables.
 func MustAsset(name string) []byte {
 	a, err := Asset(name)
-	if (err != nil) {
+	if err != nil {
 		panic("asset: Asset(" + name + "): " + err.Error())
 	}
 
@@ -298,8 +299,8 @@ func AssetNames() []string {
 
 // _bindata is a table, holding each asset generator, mapped to its name.
 var _bindata = map[string]func() (*asset, error){
-	"dump_struct.fm": dump_structFm,
-	"plain.fm": plainFm,
+	"dump_struct.fm":      dump_structFm,
+	"plain.fm":            plainFm,
 	"req_rest_methods.fm": req_rest_methodsFm,
 	"struct_sql_tomap.fm": struct_sql_tomapFm,
 }
@@ -340,64 +341,60 @@ func AssetDir(name string) ([]string, error) {
 }
 
 type bintree struct {
-	Func func() (*asset, error)
+	Func     func() (*asset, error)
 	Children map[string]*bintree
 }
+
 var _bintree = &bintree{nil, map[string]*bintree{
-	"dump_struct.fm": &bintree{dump_structFm, map[string]*bintree{
-	}},
-	"plain.fm": &bintree{plainFm, map[string]*bintree{
-	}},
-	"req_rest_methods.fm": &bintree{req_rest_methodsFm, map[string]*bintree{
-	}},
-	"struct_sql_tomap.fm": &bintree{struct_sql_tomapFm, map[string]*bintree{
-	}},
+	"dump_struct.fm":      &bintree{dump_structFm, map[string]*bintree{}},
+	"plain.fm":            &bintree{plainFm, map[string]*bintree{}},
+	"req_rest_methods.fm": &bintree{req_rest_methodsFm, map[string]*bintree{}},
+	"struct_sql_tomap.fm": &bintree{struct_sql_tomapFm, map[string]*bintree{}},
 }}
 
 // RestoreAsset restores an asset under the given directory
 func RestoreAsset(dir, name string) error {
-        data, err := Asset(name)
-        if err != nil {
-                return err
-        }
-        info, err := AssetInfo(name)
-        if err != nil {
-                return err
-        }
-        err = os.MkdirAll(_filePath(dir, filepath.Dir(name)), os.FileMode(0755))
-        if err != nil {
-                return err
-        }
-        err = ioutil.WriteFile(_filePath(dir, name), data, info.Mode())
-        if err != nil {
-                return err
-        }
-        err = os.Chtimes(_filePath(dir, name), info.ModTime(), info.ModTime())
-        if err != nil {
-                return err
-        }
-        return nil
+	data, err := Asset(name)
+	if err != nil {
+		return err
+	}
+	info, err := AssetInfo(name)
+	if err != nil {
+		return err
+	}
+	err = os.MkdirAll(_filePath(dir, filepath.Dir(name)), os.FileMode(0755))
+	if err != nil {
+		return err
+	}
+	err = ioutil.WriteFile(_filePath(dir, name), data, info.Mode())
+	if err != nil {
+		return err
+	}
+	err = os.Chtimes(_filePath(dir, name), info.ModTime(), info.ModTime())
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 // RestoreAssets restores an asset under the given directory recursively
 func RestoreAssets(dir, name string) error {
-        children, err := AssetDir(name)
-        // File
-        if err != nil {
-                return RestoreAsset(dir, name)
-        }
-        // Dir
-        for _, child := range children {
-                err = RestoreAssets(dir, filepath.Join(name, child))
-                if err != nil {
-                        return err
-                }
-        }
-        return nil
+	children, err := AssetDir(name)
+	// File
+	if err != nil {
+		return RestoreAsset(dir, name)
+	}
+	// Dir
+	for _, child := range children {
+		err = RestoreAssets(dir, filepath.Join(name, child))
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 func _filePath(dir, name string) string {
-        cannonicalName := strings.Replace(name, "\\", "/", -1)
-        return filepath.Join(append([]string{dir}, strings.Split(cannonicalName, "/")...)...)
+	cannonicalName := strings.Replace(name, "\\", "/", -1)
+	return filepath.Join(append([]string{dir}, strings.Split(cannonicalName, "/")...)...)
 }
-

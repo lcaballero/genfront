@@ -1,16 +1,17 @@
 package plain
 
 import (
-	cmd "github.com/codegangsta/cli"
-	"github.com/lcaballero/genfront/cli"
-	"github.com/lcaballero/genfront/process"
-	"log"
 	"errors"
 	"io/ioutil"
+	"log"
 	"os"
-	. "github.com/lcaballero/genfront/maybe"
-)
 
+	cmd "github.com/codegangsta/cli"
+	"github.com/lcaballero/genfront/cli"
+	. "github.com/lcaballero/genfront/maybe"
+	"github.com/lcaballero/genfront/process"
+	"github.com/lcaballero/genfront/process/datafiles"
+)
 
 type PlainProcessor struct {
 	*cli.CliConf
@@ -50,6 +51,7 @@ func (p *PlainProcessor) Run() {
 		log.Fatal(err)
 	}
 
+	p.AddDataFileValues()
 	p.Env.Debug(tpl, p.CliConf)
 
 	log.Printf("Writing output file: %s", JoinCwd(p.OutputFile()))
@@ -60,4 +62,27 @@ func (p *PlainProcessor) Run() {
 	} else {
 		log.Fatal(err)
 	}
+}
+
+func (p *PlainProcessor) AddDataFileValues() {
+	if !p.CliConf.HasDataFile() {
+		return
+	}
+
+	key, file, err := p.CliConf.DataFile()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	csv, err := datafiles.NewCsvData(key, file).Parse()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	data, err := csv.MapFieldNames()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	p.Env.Add(csv.Key, data)
 }
