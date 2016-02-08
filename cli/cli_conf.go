@@ -9,13 +9,14 @@ import (
 )
 
 const (
-	line     = "line"
-	input    = "input"
-	output   = "output"
-	debug    = "debug"
-	noop     = "noop"
+	line = "line"
+	input = "input"
+	output = "output"
+	debug = "debug"
+	noop = "noop"
 	template = "template"
 	datafile = "data-file"
+	tabDelimited = "tab-delimited"
 )
 
 type CliConf struct {
@@ -35,6 +36,9 @@ func (c *CliConf) DataFile() (string, string, error) {
 		return "", "", fmt.Errorf("Expected key:data-file flag value, but found '%s'", spec)
 	}
 	return split[0], split[1], nil
+}
+func (c *CliConf) IsTabDelimited() bool {
+	return c.ctx.IsSet(tabDelimited)
 }
 func (c *CliConf) Line() int {
 	return c.ctx.Int(line)
@@ -81,11 +85,13 @@ InputFile: %s
 OutputFile: %s
 Noop: %t
 Debug: %t
-Template: %s`,
+Template: %s
+IsTabDelimited: %v`,
 		p.Line(),
 		p.InputFile(),
 		p.OutputFile(),
 		p.Noop(),
 		p.Debug(),
-		p.Template())
+		p.Template(),
+		p.IsTabDelimited())
 }

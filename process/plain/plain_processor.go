@@ -8,9 +8,9 @@ import (
 
 	cmd "github.com/codegangsta/cli"
 	"github.com/lcaballero/genfront/cli"
-	. "github.com/lcaballero/genfront/maybe"
 	"github.com/lcaballero/genfront/process"
 	"github.com/lcaballero/genfront/process/datafiles"
+	"github.com/lcaballero/genfront/maybe"
 )
 
 type PlainProcessor struct {
@@ -39,7 +39,7 @@ func (p *PlainProcessor) Validate() error {
 }
 
 func (p *PlainProcessor) Run() {
-	log.Println("Reading template file", JoinCwd(p.Template()))
+	log.Println("Reading template file", maybe.JoinCwd(p.Template()))
 	b, err := ioutil.ReadFile(p.Template())
 	if err != nil {
 		log.Fatal(err)
@@ -54,7 +54,7 @@ func (p *PlainProcessor) Run() {
 	p.AddDataFileValues()
 	p.Env.Debug(tpl, p.CliConf)
 
-	log.Printf("Writing output file: %s", JoinCwd(p.OutputFile()))
+	log.Printf("Writing output file: %s", maybe.JoinCwd(p.OutputFile()))
 	file, err := os.Create(p.OutputFile())
 	if err == nil {
 		defer file.Close()
@@ -74,7 +74,13 @@ func (p *PlainProcessor) AddDataFileValues() {
 		log.Fatal(err)
 	}
 
-	csv, err := datafiles.NewCsvData(key, file).Parse()
+	delimiter := ','
+	log.Println(p.CliConf.IsTabDelimited())
+	if p.CliConf.IsTabDelimited() {
+		delimiter = '\t'
+	}
+
+	csv, err := datafiles.NewCsvData(key, file, delimiter).Parse()
 	if err != nil {
 		log.Fatal(err)
 	}

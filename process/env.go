@@ -127,6 +127,7 @@ func (env *Env) BuildFuncMap() template.FuncMap {
 		"lower":    strings.ToLower,
 		"toSymbol": ToSymbol,
 		"getenv":   os.Getenv,
+		"split":    strings.Split,
 	}
 }
 

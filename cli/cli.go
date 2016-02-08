@@ -6,7 +6,7 @@ import (
 
 const (
 	DefaultFieldTemplate = "struct_sql_tomap.fm"
-	usage                = "Provides various Go generation utilities."
+	usage = "Provides various Go generation utilities."
 )
 
 type Processor func(c *cmd.Context)
@@ -41,6 +41,10 @@ func plainCommand(p Processor) cmd.Command {
 		cmd.IntFlag{
 			Name:  "line",
 			Usage: "Line number of this instance.",
+		},
+		cmd.BoolFlag{
+			Name:  "tab-delimited",
+			Usage: "File is tab delimited",
 		},
 	}
 	return cmd.Command{
