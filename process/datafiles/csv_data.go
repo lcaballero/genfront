@@ -6,18 +6,21 @@ import (
 	"os"
 
 	"github.com/lcaballero/genfront/process"
+	"log"
 )
 
 type CsvData struct {
-	Key  string
-	File string
-	Data [][]string
+	Key       string
+	File      string
+	Data      [][]string
+	Delimiter rune
 }
 
-func NewCsvData(key, datafile string) *CsvData {
+func NewCsvData(key, datafile string, delimiter rune) *CsvData {
 	return &CsvData{
 		Key:  key,
 		File: datafile,
+		Delimiter: delimiter,
 	}
 }
 
@@ -29,6 +32,10 @@ func (d *CsvData) Parse() (*CsvData, error) {
 	defer f.Close()
 	reader := csv.NewReader(f)
 	reader.TrimLeadingSpace = true
+
+	reader.Comma = d.Delimiter
+
+	log.Println("Using delimiter " + string(reader.Comma))
 
 	records, err := reader.ReadAll()
 	if err != nil {
@@ -51,7 +58,7 @@ func (d *CsvData) MapFieldNames() ([]map[string]interface{}, error) {
 	headers := d.Data[0]
 	fields := d.Data[1:]
 
-	for i,header := range headers {
+	for i, header := range headers {
 		headers[i] = process.ToSymbol(header)
 	}
 
