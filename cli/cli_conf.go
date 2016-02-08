@@ -79,7 +79,7 @@ func (p *CliConf) HasTemplate() bool {
 	return p.ctx.IsSet(template)
 }
 
-func (p *CliConf) Strfing() string {
+func (p *CliConf) String() string {
 	return fmt.Sprintf(`Line: %d
 InputFile: %s
 OutputFile: %s
