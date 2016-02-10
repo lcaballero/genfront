@@ -75,14 +75,13 @@ func (p *FrontMatterProcess) Run() {
 		log.Fatal(err)
 	}
 
-	p.Env.Debug(tpl, p.CliConf)
+	p.Env.MaybeExit(p.CliConf, tpl, "")
 
 	log.Printf("Writing output file: %s", JoinCwd(p.OutputFile()))
 	file, err := os.Create(p.OutputFile())
-	if err == nil {
-		defer file.Close()
-		tpl.Execute(file, p.Env.ToMap())
-	} else {
+	if err != nil {
 		log.Fatal(err)
 	}
+	defer file.Close()
+	tpl.Execute(file, p.Env.ToMap())
 }

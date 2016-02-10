@@ -52,7 +52,7 @@ func (p *PlainProcessor) Run() {
 	}
 
 	p.AddDataFileValues()
-	p.Env.Debug(tpl, p.CliConf)
+	p.Env.MaybeExit(p.CliConf, tpl, "")
 
 	log.Printf("Writing output file: %s", JoinCwd(p.OutputFile()))
 	file, err := os.Create(p.OutputFile())

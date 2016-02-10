@@ -80,3 +80,7 @@ notice, or any other, from this software.
 [Yaml]: http://yaml.org/
 [Handlebars]: http://handlebarsjs.com/
 
+### Change Log
+1.  Added DocTable processor.
+1.  MaybeExit call with template and content.
+1.  

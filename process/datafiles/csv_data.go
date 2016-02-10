@@ -51,7 +51,7 @@ func (d *CsvData) MapFieldNames() ([]map[string]interface{}, error) {
 	headers := d.Data[0]
 	fields := d.Data[1:]
 
-	for i,header := range headers {
+	for i, header := range headers {
 		headers[i] = process.ToSymbol(header)
 	}
 

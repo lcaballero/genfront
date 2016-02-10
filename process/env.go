@@ -82,9 +82,14 @@ func (env *Env) String(key string) string {
 	}
 }
 
-func (env *Env) Codefile() string {
+// Codefile finds the .go file based on the GOFILE environment variable, else
+// it uses the provided parameter: defaultGoFile.
+func (env *Env) Codefile(defaultGoFile string) string {
 	cwd := env.String("CWD")
 	gofile := env.String("GOFILE")
+	if gofile == "" {
+		gofile = defaultGoFile
+	}
 	return filepath.Join(cwd, gofile)
 }
 
@@ -134,7 +139,7 @@ func (env *Env) CreateTemplate(tpl string) (*template.Template, error) {
 	return template.New("FrontMatterProcessor").Funcs(env.BuildFuncMap()).Parse(tpl)
 }
 
-func (p *Env) ShowDebug(tpl *template.Template, conf *cli.CliConf) {
+func (p *Env) ShowDebug(conf *cli.CliConf, tpl *template.Template, content string) {
 	w := os.Stdout
 	fmt.Fprintf(w, "%s\n", p.Sep())
 	p.ShowEnvironment(w)
@@ -142,13 +147,19 @@ func (p *Env) ShowDebug(tpl *template.Template, conf *cli.CliConf) {
 	fmt.Fprintln(w, conf)
 	fmt.Fprintf(w, "%s\n", p.Sep())
 
-	tpl.Execute(w, p.ToMap())
+	if tpl != nil {
+		tpl.Execute(w, p.ToMap())
+	}
+	if content != "" {
+		fmt.Fprintf(w, content)
+	}
+
 	fmt.Fprintln(w)
 }
 
-func (p *Env) Debug(tpl *template.Template, conf *cli.CliConf) {
+func (p *Env) MaybeExit(conf *cli.CliConf, tpl *template.Template, content string) {
 	if conf.Debug() {
-		p.ShowDebug(tpl, conf)
+		p.ShowDebug(conf, tpl, content)
 	}
 	if conf.Noop() {
 		log.Printf("Skipping writing output file: %s", JoinCwd(conf.OutputFile()))

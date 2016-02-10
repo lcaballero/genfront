@@ -19,13 +19,6 @@ import (
 	"github.com/lcaballero/genfront/process"
 )
 
-type GenState int
-
-const (
-	InitialFieldsGen GenState = 1
-	HasComment       GenState = 2
-)
-
 type FieldsProcessor struct {
 	*cli.CliConf
 	*process.Env
@@ -46,7 +39,7 @@ func (fp *FieldsProcessor) Validate() bool {
 
 func (fp *FieldsProcessor) Load() {
 	env := fp.AddGoEnvironment()
-	filename := env.Codefile()
+	filename := env.Codefile(fp.CliConf.InputFile())
 	fset := token.NewFileSet()
 
 	log.Printf("Parsing input file %s\n", filename)
@@ -55,12 +48,14 @@ func (fp *FieldsProcessor) Load() {
 		panic(err)
 	}
 
+	InitialFieldsGen := 1
+	HasComment := 2
+
 	line := fp.Line()
 	state := InitialFieldsGen
 	structName := ""
 
 	ast.Inspect(f, func(n ast.Node) bool {
-
 		switch x := n.(type) {
 		case *ast.TypeSpec:
 		case *ast.Comment:
@@ -138,7 +133,7 @@ func (fp *FieldsProcessor) State(filename, structName string, stc *ast.StructTyp
 	fp.Add("GOLINE", fp.Line())
 	fp.Add("structName", structName)
 
-	fp.Env.Debug(tpl, fp.CliConf)
+	fp.Env.MaybeExit(fp.CliConf, tpl, "")
 
 	file, err := os.Create(fp.outfile(filename))
 	if err != nil {
