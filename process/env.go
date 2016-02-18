@@ -12,8 +12,8 @@ import (
 	"path/filepath"
 
 	"github.com/lcaballero/genfront/cli"
-	. "github.com/lcaballero/genfront/maybe"
 	"github.com/spf13/viper"
+	"github.com/lcaballero/genfront/maybe"
 )
 
 var EnvVars = []string{
@@ -128,6 +128,7 @@ func (env *Env) BuildFuncMap() template.FuncMap {
 		"toSymbol": ToSymbol,
 		"getenv":   os.Getenv,
 		"split":    strings.Split,
+		"camelCase": ToCamelCase,
 	}
 }
 
@@ -152,7 +153,7 @@ func (p *Env) Debug(tpl *template.Template, conf *cli.CliConf) {
 		p.ShowDebug(tpl, conf)
 	}
 	if conf.Noop() {
-		log.Printf("Skipping writing output file: %s", JoinCwd(conf.OutputFile()))
+		log.Printf("Skipping writing output file: %s", maybe.JoinCwd(conf.OutputFile()))
 		os.Exit(1)
 	}
 }

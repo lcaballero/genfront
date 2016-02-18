@@ -30,3 +30,18 @@ func ToSymbol(sys string) string {
 	header := strings.Join(parts, "")
 	return header
 }
+
+func ToCamelCase(s ...string) string {
+	if len(s) < 1 {
+		return ""
+	}
+	pieces := make([]string, 0)
+	for i, str := range s {
+		if i == 0 {
+			pieces = append(pieces, strings.Join([]string{strings.ToLower(str)}, ""))
+		} else {
+			pieces = append(pieces, strings.Join([]string{strings.ToUpper(str[0:1]), strings.ToLower(str[1:])}, ""))
+		}
+	}
+	return strings.Join(pieces, "")
+}
