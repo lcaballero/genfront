@@ -23,4 +23,22 @@ func TestHelpers(t *testing.T) {
 			So(actual, ShouldEqual, exptected)
 		}
 	})
+
+	Convey("Test camel case simple", t, func() {
+		testInput := []string{"First", "second", "third", "word"}
+		expectedOutput := "firstSecondThirdWord"
+
+		testOutput := ToCamelCase(testInput...)
+
+		So(testOutput, ShouldEqual, expectedOutput)
+	})
+
+	Convey("Test camel case complex", t, func() {
+		testInput := []string{"FIRST", "SeCoNd", "tHIRd", "word"}
+		expectedOutput := "firstSecondThirdWord"
+
+		testOutput := ToCamelCase(testInput...)
+
+		So(testOutput, ShouldEqual, expectedOutput)
+	})
 }
