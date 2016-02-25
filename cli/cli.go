@@ -11,7 +11,7 @@ const (
 
 type Processor func(c *cmd.Context)
 type Processors struct {
-	FrontMatter, FieldProcessor, PlainProcessor Processor
+	DocTableProcessor, FrontMatter, FieldProcessor, PlainProcessor Processor
 }
 
 func NewCli(p *Processors) *cmd.App {
@@ -23,8 +23,36 @@ func NewCli(p *Processors) *cmd.App {
 		frontCommand(p.FrontMatter),
 		fieldsCommand(p.FieldProcessor),
 		plainCommand(p.PlainProcessor),
+		doctableCommand(p.DocTableProcessor),
 	}
 	return app
+}
+
+func doctableCommand(p Processor) cmd.Command {
+	custom := []cmd.Flag{
+		cmd.StringFlag{
+			Name:  "input",
+			Usage: "Optional input .go file to process.",
+		},
+		cmd.StringFlag{
+			Name:  "output",
+			Usage: "Name of json file to output.",
+		},
+		cmd.StringFlag{
+			Name:  "template",
+			Usage: "The name of the template file to render.",
+		},
+		cmd.IntFlag{
+			Name:  "line",
+			Usage: "Line number of this instance.",
+		},
+	}
+	return cmd.Command{
+		Name:   "doctable",
+		Usage:  "Process a template with Go environment with fields and comments.",
+		Action: p,
+		Flags:  flags(debugFlag(), custom...),
+	}
 }
 
 func plainCommand(p Processor) cmd.Command {
