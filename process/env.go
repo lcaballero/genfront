@@ -134,6 +134,7 @@ func (env *Env) BuildFuncMap() template.FuncMap {
 		"getenv":   os.Getenv,
 		"split":    strings.Split,
 		"camelCase": ToCamelCase,
+		"hasPrefix": strings.HasPrefix,
 	}
 }
 
