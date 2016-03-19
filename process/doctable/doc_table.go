@@ -5,7 +5,6 @@ import (
 	"go/ast"
 	"go/parser"
 	"go/token"
-	"strings"
 
 	cmd "github.com/codegangsta/cli"
 	"github.com/lcaballero/genfront/cli"
@@ -101,7 +100,7 @@ func (d *DocFinder) ProcessFields(st *FieldAndDoc, x *ast.StructType) {
 					comments = append(comments, comment.Text)
 				}
 			}
-			st.Add(name.Name, strings.Join(comments, "\n"))
+			st.Add(name.Name, comments...)
 		}
 	}
 }
@@ -164,7 +163,13 @@ func (d *DocFinder) renderTemplate(structs []*FieldAndDoc) error {
 	}
 	defer file.Close()
 	vals := d.Env.ToMap()
-	vals["data"] = structs
+
+	if d.CliConf.HasVarName() {
+		vals[d.CliConf.VarName()] = structs
+	} else {
+		vals["data"] = structs
+	}
+
 	template.Execute(file, vals)
 	return nil
 }

@@ -17,6 +17,7 @@ const (
 	template = "template"
 	datafile = "data-file"
 	tabDelimited = "tab-delimited"
+	varName = "var-name"
 )
 
 type CliConf struct {
@@ -52,6 +53,9 @@ func (p *CliConf) OutputFile() string {
 func (p *CliConf) Template() string {
 	return p.ctx.String(template)
 }
+func (p *CliConf) VarName() string {
+	return p.ctx.String(varName)
+}
 
 func (p *CliConf) Debug() bool {
 	return p.ctx.Bool(debug)
@@ -77,6 +81,9 @@ func (p *CliConf) HasNoop() bool {
 }
 func (p *CliConf) HasTemplate() bool {
 	return p.ctx.IsSet(template)
+}
+func (p *CliConf) HasVarName() bool {
+	return p.ctx.IsSet(varName)
 }
 
 func (p *CliConf) String() string {

@@ -13,6 +13,17 @@ the static embedded yaml data.
 Placed above a struct, it provides struct fields as data to the
 template for rendering.
 
+## Template Helpers
+
+#### title
+#### lower
+#### toSymbol
+#### getenv
+#### split
+#### camelCase
+#### hasPrefix
+
+
 ## Example Usage
 
 ```
@@ -60,9 +71,8 @@ is lower-cased.
 
 ## TODO
 
-- Test the behavior around not having front matter, or improperly formed front
-  matter file.
 - Add more helper methods for rendering. 
+- Documentation and examples.
 
 ## License
 
@@ -80,7 +90,3 @@ notice, or any other, from this software.
 [Yaml]: http://yaml.org/
 [Handlebars]: http://handlebarsjs.com/
 
-### Change Log
-1.  Added DocTable processor.
-1.  MaybeExit call with template and content.
-1.  

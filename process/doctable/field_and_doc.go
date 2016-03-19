@@ -21,8 +21,12 @@ func NewFieldAndDoc(name string) *FieldAndDoc {
 
 // Add fills in the FieldDoc member with key value pairs where the key is
 // the name of the field and the value is the associated documentation string.
-func (f *FieldAndDoc) Add(field, doc string) {
-	f.FieldDoc[field] = f.commentToString(doc)
+func (f *FieldAndDoc) Add(field string, doc ...string) {
+	comments := make([]string, len(doc))
+	for i,c := range doc {
+		comments[i] = f.commentToString(c)
+	}
+	f.FieldDoc[field] = strings.Join(comments, "\n")
 }
 
 // commentToString removes comment delimeters from the given string, namely
