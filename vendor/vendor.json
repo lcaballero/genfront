@@ -1,0 +1,151 @@
+{
+	"comment": "",
+	"ignore": "test",
+	"package": [
+		{
+			"path": "github.com/BurntSushi/toml",
+			"revision": "056c9bc7be7190eaa7715723883caffa5f8fa3e4",
+			"revisionTime": "2015-05-01T06:40:42-04:00"
+		},
+		{
+			"path": "github.com/codegangsta/cli",
+			"revision": "f9cc3001e04f9783cb4ad08ca6791aa07134787c",
+			"revisionTime": "2016-01-21T21:44:38-08:00"
+		},
+		{
+			"path": "github.com/hashicorp/hcl",
+			"revision": "197e8d3cf42199cfd53cd775deb37f3637234635",
+			"revisionTime": "2015-12-18T11:53:00-06:00"
+		},
+		{
+			"path": "github.com/hashicorp/hcl/hcl/ast",
+			"revision": "197e8d3cf42199cfd53cd775deb37f3637234635",
+			"revisionTime": "2015-12-18T11:53:00-06:00"
+		},
+		{
+			"path": "github.com/hashicorp/hcl/hcl/parser",
+			"revision": "197e8d3cf42199cfd53cd775deb37f3637234635",
+			"revisionTime": "2015-12-18T11:53:00-06:00"
+		},
+		{
+			"path": "github.com/hashicorp/hcl/hcl/scanner",
+			"revision": "197e8d3cf42199cfd53cd775deb37f3637234635",
+			"revisionTime": "2015-12-18T11:53:00-06:00"
+		},
+		{
+			"path": "github.com/hashicorp/hcl/hcl/strconv",
+			"revision": "197e8d3cf42199cfd53cd775deb37f3637234635",
+			"revisionTime": "2015-12-18T11:53:00-06:00"
+		},
+		{
+			"path": "github.com/hashicorp/hcl/hcl/token",
+			"revision": "197e8d3cf42199cfd53cd775deb37f3637234635",
+			"revisionTime": "2015-12-18T11:53:00-06:00"
+		},
+		{
+			"path": "github.com/hashicorp/hcl/json/parser",
+			"revision": "197e8d3cf42199cfd53cd775deb37f3637234635",
+			"revisionTime": "2015-12-18T11:53:00-06:00"
+		},
+		{
+			"path": "github.com/hashicorp/hcl/json/scanner",
+			"revision": "197e8d3cf42199cfd53cd775deb37f3637234635",
+			"revisionTime": "2015-12-18T11:53:00-06:00"
+		},
+		{
+			"path": "github.com/hashicorp/hcl/json/token",
+			"revision": "197e8d3cf42199cfd53cd775deb37f3637234635",
+			"revisionTime": "2015-12-18T11:53:00-06:00"
+		},
+		{
+			"path": "github.com/jtolds/gls",
+			"revision": "f1ac7f4f24f50328e6bc838ca4437d1612a0243c",
+			"revisionTime": "2014-11-03T11:57:36-07:00"
+		},
+		{
+			"path": "github.com/kr/pretty",
+			"revision": "e6ac2fc51e89a3249e82157fa0bb7a18ef9dd5bb",
+			"revisionTime": "2015-05-20T12:35:14-04:00"
+		},
+		{
+			"path": "github.com/kr/text",
+			"revision": "bb797dc4fb8320488f47bf11de07a733d7233e1f",
+			"revisionTime": "2015-09-05T15:45:08-07:00"
+		},
+		{
+			"path": "github.com/lcaballero/gel",
+			"revision": "70f373e58dcbafa1c9b75c1fca551144a7f00b63",
+			"revisionTime": "2016-03-19T22:21:36-06:00"
+		},
+		{
+			"path": "github.com/magiconair/properties",
+			"revision": "c81f9d71af8f8cba1466501d30326b99a4e56c19",
+			"revisionTime": "2015-12-21T22:31:49+01:00"
+		},
+		{
+			"path": "github.com/mitchellh/mapstructure",
+			"revision": "281073eb9eb092240d33ef253c404f1cca550309",
+			"revisionTime": "2015-07-16T22:11:58-07:00"
+		},
+		{
+			"path": "github.com/smartystreets/assertions",
+			"revision": "f7f8515867bb29af7a7978a93927c42b5685aa76",
+			"revisionTime": "2016-02-19T17:03:21-07:00"
+		},
+		{
+			"path": "github.com/smartystreets/assertions/internal/go-render/render",
+			"revision": "f7f8515867bb29af7a7978a93927c42b5685aa76",
+			"revisionTime": "2016-02-19T17:03:21-07:00"
+		},
+		{
+			"path": "github.com/smartystreets/assertions/internal/oglematchers",
+			"revision": "f7f8515867bb29af7a7978a93927c42b5685aa76",
+			"revisionTime": "2016-02-19T17:03:21-07:00"
+		},
+		{
+			"path": "github.com/smartystreets/goconvey/convey",
+			"revision": "99f2b1e01343c8bc2d9d12f1194d2d68ce18b063",
+			"revisionTime": "2016-02-27T08:26:14-07:00"
+		},
+		{
+			"path": "github.com/smartystreets/goconvey/convey/gotest",
+			"revision": "99f2b1e01343c8bc2d9d12f1194d2d68ce18b063",
+			"revisionTime": "2016-02-27T08:26:14-07:00"
+		},
+		{
+			"path": "github.com/smartystreets/goconvey/convey/reporting",
+			"revision": "99f2b1e01343c8bc2d9d12f1194d2d68ce18b063",
+			"revisionTime": "2016-02-27T08:26:14-07:00"
+		},
+		{
+			"path": "github.com/spf13/cast",
+			"revision": "ee7b3e0353166ab1f3a605294ac8cd2b77953778",
+			"revisionTime": "2015-11-26T07:42:19+01:00"
+		},
+		{
+			"path": "github.com/spf13/jwalterweatherman",
+			"revision": "d00654080cddbd2b082acaa74007cb94a2b40866",
+			"revisionTime": "2015-10-14T12:42:31+05:30"
+		},
+		{
+			"path": "github.com/spf13/pflag",
+			"revision": "7f60f83a2c81bc3c3c0d5297f61ddfa68da9d3b7",
+			"revisionTime": "2015-10-24T12:54:09+02:00"
+		},
+		{
+			"path": "github.com/spf13/viper",
+			"revision": "0c82789feb03da74b3390a5d64b8ce2ce9ba0f3e",
+			"revisionTime": "2015-12-25T12:29:33+08:00"
+		},
+		{
+			"path": "gopkg.in/fsnotify.v1",
+			"revision": "508915b7500b6e42a87132e4afeb4729cebc7cbb",
+			"revisionTime": "2015-12-17T11:48:24-07:00"
+		},
+		{
+			"path": "gopkg.in/yaml.v2",
+			"revision": "53feefa2559fb8dfa8d81baad31be332c97d6c77",
+			"revisionTime": "2015-09-24T11:23:14-03:00"
+		}
+	]
+}

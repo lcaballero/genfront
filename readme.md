@@ -1,7 +1,11 @@
+[![Build Status](https://travis-ci.org/lcaballero/genfront.svg?branch=master)](https://travis-ci.org/lcaballero/genfront)
+
+
 # Overview
 
 `genfront` is a code generating tool.  `genfront` provides several
 subcommands for different generating patterns.  See the usage below.
+
 
 ## Subcommands
 
@@ -13,6 +17,7 @@ the static embedded yaml data.
 Placed above a struct, it provides struct fields as data to the
 template for rendering.
 
+
 ## Template Helpers
 
 #### title
@@ -22,6 +27,7 @@ template for rendering.
 #### split
 #### camelCase
 #### hasPrefix
+
 
 ## Example Usage
 
@@ -61,10 +67,6 @@ func (r *Req) {{ . | title }}() *Req {
 }{{ end }}
 ```
 
-## TODO
-
-- Add more helper methods for rendering. 
-- Documentation and examples.
 
 ## License
 
