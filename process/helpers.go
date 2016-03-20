@@ -23,6 +23,7 @@ func SnakeToPascal(sk string) string {
 }
 
 func ToSymbol(sys string) string {
+	sys = strings.Replace(sys, "-", " ", -1)
 	parts := strings.Split(sys, " ")
 	for i := 0; i < len(parts); i++ {
 		parts[i] = ToPascal(parts[i])
