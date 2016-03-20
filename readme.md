@@ -23,7 +23,6 @@ template for rendering.
 #### camelCase
 #### hasPrefix
 
-
 ## Example Usage
 
 ```
@@ -31,7 +30,7 @@ template for rendering.
 ```
 
 *req_methods.fm*
-```
+```go
 ---
 methods:
   - OPTIONS
@@ -61,13 +60,6 @@ func (r *Req) {{ . | title }}() *Req {
 	return r.Method({{ . }})
 }{{ end }}
 ```
-
-## Helpers
-
-#### toPascal(string) string
-Returns a string where the first letter is uppercase and the remainder of the string
-is lower-cased.
-
 
 ## TODO
 
