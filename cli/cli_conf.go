@@ -16,6 +16,7 @@ const (
 	noop = "noop"
 	template = "template"
 	datafile = "data-file"
+	datafiles = "data-files"
 	tabDelimited = "tab-delimited"
 )
 
@@ -29,13 +30,33 @@ func NewCliConf(c *cmd.Context) *CliConf {
 	}
 }
 
-func (c *CliConf) DataFile() (string, string, error) {
+type DataFile struct {
+	Key, File string
+}
+
+func (c *CliConf) DataFile() (DataFile, error) {
 	spec := c.ctx.String(datafile)
+	return c.splitKeyedData(spec)
+}
+func (c *CliConf) splitKeyedData(spec string) (DataFile, error) {
 	split := strings.Split(spec, ":")
 	if len(split) != 2 {
-		return "", "", fmt.Errorf("Expected key:data-file flag value, but found '%s'", spec)
+		return DataFile{}, fmt.Errorf("Expected key:data-file flag value, but found '%s'", spec)
 	}
-	return split[0], split[1], nil
+	return DataFile{Key:split[0], File:split[1]}, nil
+}
+func (c *CliConf) DataFiles() ([]DataFile, error) {
+	spec := c.ctx.String(datafiles)
+	split := strings.Split(spec, ",")
+	keyed := make([]DataFile, 0)
+	for _,split := range split {
+		df, err := c.splitKeyedData(split)
+		if err != nil {
+			return nil, err
+		}
+		keyed = append(keyed, df)
+	}
+	return keyed, nil
 }
 func (c *CliConf) IsTabDelimited() bool {
 	return c.ctx.IsSet(tabDelimited)
@@ -62,6 +83,9 @@ func (p *CliConf) Noop() bool {
 
 func (p *CliConf) HasDataFile() bool {
 	return p.ctx.IsSet(datafile)
+}
+func (p *CliConf) HasDataFiles() bool {
+	return p.ctx.IsSet(datafiles)
 }
 func (p *CliConf) HasOutputFile() bool {
 	return p.ctx.IsSet(output)

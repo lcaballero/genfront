@@ -74,6 +74,10 @@ func plainCommand(p Processor) cmd.Command {
 			Name:  "tab-delimited",
 			Usage: "File is tab delimited",
 		},
+		cmd.StringFlag{
+			Name:  "data-files",
+			Usage: "Provide data from a files.  Value is comma sep of name:file.ext",
+		},
 	}
 	return cmd.Command{
 		Name:   "plain",

@@ -7,25 +7,24 @@ import (
 
 	"github.com/lcaballero/genfront/process"
 	"log"
+	"github.com/lcaballero/genfront/cli"
 )
 
 type CsvData struct {
-	Key       string
-	File      string
+	Keyed     cli.DataFile
 	Data      [][]string
 	Delimiter rune
 }
 
-func NewCsvData(key, datafile string, delimiter rune) *CsvData {
+func NewCsvData(keyed cli.DataFile, delimiter rune) *CsvData {
 	return &CsvData{
-		Key:  key,
-		File: datafile,
+		Keyed: keyed,
 		Delimiter: delimiter,
 	}
 }
 
 func (d *CsvData) Parse() (*CsvData, error) {
-	f, err := os.Open(d.File)
+	f, err := os.Open(d.Keyed.File)
 	if err != nil {
 		return d, err
 	}

@@ -60,12 +60,18 @@ func (e *Env) Sep() string {
 	return strings.Repeat("-", 80)
 }
 
-func (env *Env) ShowEnvironment(w io.Writer) {
+func (env *Env) ShowEnvironment(w io.Writer, errs ...error) {
 	for k, v := range env.pairs {
 		fmt.Fprintf(w, "%s : %s\n", k, v)
 	}
 	for i, e := range os.Args {
 		fmt.Fprintf(w, "os.Args[%d] = %s\n", i, e)
+	}
+
+	if errs != nil && len(errs) > 0 {
+		for _,err := range errs {
+			fmt.Fprintln(w, err)
+		}
 	}
 }
 

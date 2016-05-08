@@ -11,6 +11,7 @@ import (
 	"github.com/lcaballero/genfront/process"
 	"github.com/lcaballero/genfront/process/datafiles"
 	"github.com/lcaballero/genfront/maybe"
+	"path/filepath"
 )
 
 type PlainProcessor struct {
@@ -65,22 +66,48 @@ func (p *PlainProcessor) Run() {
 }
 
 func (p *PlainProcessor) AddDataFileValues() {
-	if !p.CliConf.HasDataFile() {
+	if p.CliConf.HasDataFile() {
+		keyed, err := p.CliConf.DataFile()
+		if err != nil {
+			log.Fatal(err)
+		}
+		p.AddSingleFile(keyed)
 		return
 	}
+	if p.CliConf.HasDataFiles() {
+		p.AddFiles()
+		return
+	}
+}
 
-	key, file, err := p.CliConf.DataFile()
+func (p *PlainProcessor) AddFiles() {
+	keyed, err := p.CliConf.DataFiles()
 	if err != nil {
 		log.Fatal(err)
 	}
+	for _,k := range keyed {
+		p.AddJsonValues(k)
+	}
+}
 
+func (p *PlainProcessor) AddSingleFile(keyed cli.DataFile) {
+	ext := filepath.Ext(keyed.File)
+	switch ext {
+	case ".tsv", ".csv":
+		p.AddTabSepValues(keyed)
+	case ".json":
+		p.AddJsonValues(keyed)
+	}
+}
+
+func (p *PlainProcessor) AddTabSepValues(keyed cli.DataFile) {
 	delimiter := ','
 	log.Println(p.CliConf.IsTabDelimited())
 	if p.CliConf.IsTabDelimited() {
 		delimiter = '\t'
 	}
 
-	csv, err := datafiles.NewCsvData(key, file, delimiter).Parse()
+	csv, err := datafiles.NewCsvData(keyed, delimiter).Parse()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -90,5 +117,15 @@ func (p *PlainProcessor) AddDataFileValues() {
 		log.Fatal(err)
 	}
 
-	p.Env.Add(csv.Key, data)
+	p.Env.Add(keyed.Key, data)
+}
+
+func (p *PlainProcessor) AddJsonValues(keyed cli.DataFile) {
+	json := datafiles.NewJsonData(keyed)
+	data, err := json.Unmarshal()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	p.Env.Add(keyed.Key, data)
 }
