@@ -1,7 +1,11 @@
+[![Build Status](https://travis-ci.org/lcaballero/genfront.svg?branch=master)](https://travis-ci.org/lcaballero/genfront)
+
+
 # Overview
 
 `genfront` is a code generating tool.  `genfront` provides several
 subcommands for different generating patterns.  See the usage below.
+
 
 ## Subcommands
 
@@ -13,6 +17,18 @@ the static embedded yaml data.
 Placed above a struct, it provides struct fields as data to the
 template for rendering.
 
+
+## Template Helpers
+
+#### title
+#### lower
+#### toSymbol
+#### getenv
+#### split
+#### camelCase
+#### hasPrefix
+
+
 ## Example Usage
 
 ```
@@ -20,7 +36,7 @@ template for rendering.
 ```
 
 *req_methods.fm*
-```
+```go
 ---
 methods:
   - OPTIONS
@@ -51,18 +67,6 @@ func (r *Req) {{ . | title }}() *Req {
 }{{ end }}
 ```
 
-## Helpers
-
-#### toPascal(string) string
-Returns a string where the first letter is uppercase and the remainder of the string
-is lower-cased.
-
-
-## TODO
-
-- Test the behavior around not having front matter, or improperly formed front
-  matter file.
-- Add more helper methods for rendering. 
 
 ## License
 
@@ -80,7 +84,3 @@ notice, or any other, from this software.
 [Yaml]: http://yaml.org/
 [Handlebars]: http://handlebarsjs.com/
 
-### Change Log
-1.  Added DocTable processor.
-1.  MaybeExit call with template and content.
-1.  

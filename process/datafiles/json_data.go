@@ -1,4 +1,5 @@
 package datafiles
+
 import (
 	"io/ioutil"
 	"encoding/json"
