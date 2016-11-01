@@ -13,7 +13,6 @@ import (
 
 	"io/ioutil"
 
-	cmd "github.com/codegangsta/cli"
 	"github.com/lcaballero/genfront/cli"
 	. "github.com/lcaballero/genfront/maybe"
 	"github.com/lcaballero/genfront/process"
@@ -24,9 +23,9 @@ type FieldsProcessor struct {
 	*process.Env
 }
 
-func RunFieldProcessor(c *cmd.Context) {
+func RunFieldProcessor(c *cli.CliConf) {
 	fp := &FieldsProcessor{
-		CliConf: cli.NewCliConf(c),
+		CliConf: c,
 		Env:     process.NewEnv(),
 	}
 

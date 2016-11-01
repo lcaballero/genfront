@@ -7,7 +7,6 @@ import (
 	"go/token"
 
 	"fmt"
-	cmd "github.com/codegangsta/cli"
 	"github.com/lcaballero/genfront/cli"
 	. "github.com/lcaballero/genfront/maybe"
 	"github.com/lcaballero/genfront/process"
@@ -20,9 +19,9 @@ type DocFinder struct {
 	*process.Env
 }
 
-func RunDocFinder(c *cmd.Context) {
+func RunDocFinder(c *cli.CliConf) {
 	df := &DocFinder{
-		CliConf: cli.NewCliConf(c),
+		CliConf: c,
 		Env:     process.NewEnv(),
 	}
 	defer func() {

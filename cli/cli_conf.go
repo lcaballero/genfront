@@ -25,9 +25,7 @@ type CliConf struct {
 }
 
 func NewCliConf(c *cmd.Context) *CliConf {
-	return &CliConf{
-		ctx: c,
-	}
+	return &CliConf{ctx: c}
 }
 
 func (c *CliConf) DataFile() (string, string, error) {

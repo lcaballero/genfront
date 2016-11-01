@@ -6,7 +6,6 @@ import (
 	"log"
 	"os"
 
-	cmd "github.com/codegangsta/cli"
 	"github.com/lcaballero/genfront/cli"
 	"github.com/lcaballero/genfront/maybe"
 	"github.com/lcaballero/genfront/process"
@@ -19,9 +18,9 @@ type PlainProcessor struct {
 	*process.Env
 }
 
-func RunPlainProcessor(c *cmd.Context) {
+func RunPlainProcessor(c *cli.CliConf) {
 	p := &PlainProcessor{
-		CliConf: cli.NewCliConf(c),
+		CliConf: c,
 		Env:     process.NewEnv(),
 	}
 	err := p.Validate()

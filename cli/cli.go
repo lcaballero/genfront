@@ -18,7 +18,7 @@ type Processors struct {
 	PlainProcessor    Processor
 }
 
-func withContext(p Processor) func(c *cmd.Context) {
+func withContext(p Processor) func(*cmd.Context) {
 	return func(c *cmd.Context) {
 		p(NewCliConf(c))
 	}

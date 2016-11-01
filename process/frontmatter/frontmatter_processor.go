@@ -8,7 +8,6 @@ import (
 	"log"
 	"os"
 
-	cmd "github.com/codegangsta/cli"
 	"github.com/lcaballero/genfront/cli"
 	. "github.com/lcaballero/genfront/maybe"
 	"github.com/lcaballero/genfront/process"
@@ -22,9 +21,9 @@ const (
 
 // Cli provides the context (flags and values) with which to run a process for
 // generating over a front matter file.
-func RunFrontMatterProcessor(c *cmd.Context) {
+func RunFrontMatterProcessor(c *cli.CliConf) {
 	p := &FrontMatterProcess{
-		CliConf:  cli.NewCliConf(c),
+		CliConf:  c,
 		portions: &Portions{},
 		Env:      process.NewEnv(),
 	}
