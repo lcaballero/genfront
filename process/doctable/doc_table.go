@@ -6,15 +6,14 @@ import (
 	"go/parser"
 	"go/token"
 
+	"fmt"
 	cmd "github.com/codegangsta/cli"
 	"github.com/lcaballero/genfront/cli"
-	"github.com/lcaballero/genfront/process"
 	. "github.com/lcaballero/genfront/maybe"
-	"os"
+	"github.com/lcaballero/genfront/process"
 	"io/ioutil"
-	"fmt"
+	"os"
 )
-
 
 type DocFinder struct {
 	*cli.CliConf

@@ -8,9 +8,9 @@ import (
 
 	cmd "github.com/codegangsta/cli"
 	"github.com/lcaballero/genfront/cli"
+	"github.com/lcaballero/genfront/maybe"
 	"github.com/lcaballero/genfront/process"
 	"github.com/lcaballero/genfront/process/datafiles"
-	"github.com/lcaballero/genfront/maybe"
 	"path/filepath"
 )
 

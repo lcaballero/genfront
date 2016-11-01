@@ -18,18 +18,9 @@ Placed above a struct, it provides struct fields as data to the
 template for rendering.
 
 
-## Template Helpers
-
-#### title
-#### lower
-#### toSymbol
-#### getenv
-#### split
-#### camelCase
-#### hasPrefix
-
-
 ## Example Usage
+
+### With Front Matter
 
 ```
 //go:generate genfront front --input req_methods.fm --output req_methods.go
@@ -66,6 +57,16 @@ func (r *Req) {{ . | title }}() *Req {
 	return r.Method({{ . }})
 }{{ end }}
 ```
+
+## Template Helpers
+
+#### title
+#### lower
+#### toSymbol
+#### getenv
+#### split
+#### camelCase
+#### hasPrefix
 
 
 ## License

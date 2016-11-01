@@ -18,8 +18,8 @@ type CsvData struct {
 
 func NewCsvData(key, datafile string, delimiter rune) *CsvData {
 	return &CsvData{
-		Key:  key,
-		File: datafile,
+		Key:       key,
+		File:      datafile,
 		Delimiter: delimiter,
 	}
 }

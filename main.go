@@ -11,9 +11,9 @@ import (
 )
 
 func main() {
-	procs := &cli.Processors{
+	procs := cli.Processors{
 		FieldProcessor:    fields.RunFieldProcessor,
-		FrontMatter:       frontmatter.NewFrontMatterProcessor,
+		FrontMatter:       frontmatter.RunFrontMatterProcessor,
 		PlainProcessor:    plain.RunPlainProcessor,
 		DocTableProcessor: doctable.RunDocFinder,
 	}

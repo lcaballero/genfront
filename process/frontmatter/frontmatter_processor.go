@@ -22,7 +22,7 @@ const (
 
 // Cli provides the context (flags and values) with which to run a process for
 // generating over a front matter file.
-func NewFrontMatterProcessor(c *cmd.Context) {
+func RunFrontMatterProcessor(c *cmd.Context) {
 	p := &FrontMatterProcess{
 		CliConf:  cli.NewCliConf(c),
 		portions: &Portions{},
