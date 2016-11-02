@@ -8,8 +8,7 @@ type Conf2 struct {
 	/* Heres a description */
 	MaxLength int64
 	// Doc for Max Age
-	MaxAge    int64
+	MaxAge int64
 	// Comments ReadQueue
 	ReadQueue string `omit:`
 }
-

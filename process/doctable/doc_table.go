@@ -6,24 +6,22 @@ import (
 	"go/parser"
 	"go/token"
 
-	cmd "github.com/codegangsta/cli"
-	"github.com/lcaballero/genfront/cli"
-	"github.com/lcaballero/genfront/process"
-	. "github.com/lcaballero/genfront/maybe"
-	"os"
-	"io/ioutil"
 	"fmt"
+	"github.com/lcaballero/genfront/cli"
+	. "github.com/lcaballero/genfront/maybe"
+	"github.com/lcaballero/genfront/process"
+	"io/ioutil"
+	"os"
 )
-
 
 type DocFinder struct {
 	*cli.CliConf
 	*process.Env
 }
 
-func RunDocFinder(c *cmd.Context) {
+func RunDocFinder(c *cli.CliConf) {
 	df := &DocFinder{
-		CliConf: cli.NewCliConf(c),
+		CliConf: c,
 		Env:     process.NewEnv(),
 	}
 	defer func() {

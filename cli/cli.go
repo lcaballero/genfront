@@ -6,15 +6,25 @@ import (
 
 const (
 	DefaultFieldTemplate = "struct_sql_tomap.fm"
-	usage = "Provides various Go generation utilities."
+	usage                = "Provides various Go generation utilities."
 )
 
-type Processor func(c *cmd.Context)
+type Processor func(c *CliConf)
+
 type Processors struct {
-	DocTableProcessor, FrontMatter, FieldProcessor, PlainProcessor Processor
+	DocTableProcessor Processor
+	FrontMatter       Processor
+	FieldProcessor    Processor
+	PlainProcessor    Processor
 }
 
-func NewCli(p *Processors) *cmd.App {
+func withContext(p Processor) func(*cmd.Context) {
+	return func(c *cmd.Context) {
+		p(NewCliConf(c))
+	}
+}
+
+func NewCli(p Processors) *cmd.App {
 	app := cmd.NewApp()
 	app.Name = "genfront"
 	app.Version = "0.0.1"
@@ -43,7 +53,7 @@ func doctableCommand(p Processor) cmd.Command {
 			Usage: "The name of the template file to render.",
 		},
 		cmd.StringFlag{
-			Name: "var-name",
+			Name:  "var-name",
 			Usage: "Variable name for use in template.",
 		},
 		cmd.IntFlag{
@@ -54,7 +64,7 @@ func doctableCommand(p Processor) cmd.Command {
 	return cmd.Command{
 		Name:   "doctable",
 		Usage:  "Process a template with Go environment with fields and comments.",
-		Action: p,
+		Action: withContext(p),
 		Flags:  flags(debugFlag(), custom...),
 	}
 }
@@ -82,7 +92,7 @@ func plainCommand(p Processor) cmd.Command {
 	return cmd.Command{
 		Name:   "plain",
 		Usage:  "Process a template with Go environment.",
-		Action: p,
+		Action: withContext(p),
 		Flags:  flags(debugFlag(), custom...),
 	}
 }
@@ -106,7 +116,7 @@ func fieldsCommand(p Processor) cmd.Command {
 	return cmd.Command{
 		Name:   "fields",
 		Usage:  "Process struct fields for sql io.",
-		Action: p,
+		Action: withContext(p),
 		Flags:  flags(debugFlag(), custom...),
 	}
 }
@@ -126,7 +136,7 @@ func frontCommand(p Processor) cmd.Command {
 		Name:   "front",
 		Usage:  "Runs generator based on a front-matter file.",
 		Flags:  flags(debugFlag(), custom...),
-		Action: p,
+		Action: withContext(p),
 	}
 }
 

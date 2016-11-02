@@ -12,8 +12,8 @@ import (
 	"path/filepath"
 
 	"github.com/lcaballero/genfront/cli"
-	"github.com/spf13/viper"
 	"github.com/lcaballero/genfront/maybe"
+	"github.com/spf13/viper"
 )
 
 var EnvVars = []string{
@@ -128,11 +128,13 @@ func (env *Env) AddGoEnvironment() *Env {
 
 func (env *Env) BuildFuncMap() template.FuncMap {
 	return template.FuncMap{
-		"title":    ToPascal,
-		"lower":    strings.ToLower,
-		"toSymbol": ToSymbol,
-		"getenv":   os.Getenv,
-		"split":    strings.Split,
+		"pascal":    ToPascal,
+		"title":     strings.Title,
+		"lower":     strings.ToLower,
+		"upper":     strings.ToUpper,
+		"toSymbol":  ToSymbol,
+		"getenv":    os.Getenv,
+		"split":     strings.Split,
 		"camelCase": ToCamelCase,
 		"hasPrefix": strings.HasPrefix,
 	}

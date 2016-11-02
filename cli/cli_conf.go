@@ -9,15 +9,15 @@ import (
 )
 
 const (
-	line = "line"
-	input = "input"
-	output = "output"
-	debug = "debug"
-	noop = "noop"
-	template = "template"
-	datafile = "data-file"
+	line         = "line"
+	input        = "input"
+	output       = "output"
+	debug        = "debug"
+	noop         = "noop"
+	template     = "template"
+	datafile     = "data-file"
 	tabDelimited = "tab-delimited"
-	varName = "var-name"
+	varName      = "var-name"
 )
 
 type CliConf struct {
@@ -25,9 +25,7 @@ type CliConf struct {
 }
 
 func NewCliConf(c *cmd.Context) *CliConf {
-	return &CliConf{
-		ctx: c,
-	}
+	return &CliConf{ctx: c}
 }
 
 func (c *CliConf) DataFile() (string, string, error) {

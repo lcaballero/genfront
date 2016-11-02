@@ -23,7 +23,7 @@ func NewFieldAndDoc(name string) *FieldAndDoc {
 // the name of the field and the value is the associated documentation string.
 func (f *FieldAndDoc) Add(field string, doc ...string) {
 	comments := make([]string, len(doc))
-	for i,c := range doc {
+	for i, c := range doc {
 		comments[i] = f.commentToString(c)
 	}
 	f.FieldDoc[field] = strings.Join(comments, "\n")

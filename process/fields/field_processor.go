@@ -13,9 +13,8 @@ import (
 
 	"io/ioutil"
 
-	cmd "github.com/codegangsta/cli"
-	. "github.com/lcaballero/genfront/maybe"
 	"github.com/lcaballero/genfront/cli"
+	. "github.com/lcaballero/genfront/maybe"
 	"github.com/lcaballero/genfront/process"
 )
 
@@ -24,9 +23,9 @@ type FieldsProcessor struct {
 	*process.Env
 }
 
-func RunFieldProcessor(c *cmd.Context) {
+func RunFieldProcessor(c *cli.CliConf) {
 	fp := &FieldsProcessor{
-		CliConf: cli.NewCliConf(c),
+		CliConf: c,
 		Env:     process.NewEnv(),
 	}
 
@@ -79,7 +78,7 @@ func (fp *FieldsProcessor) Load() {
 func deriveOutfile(gen string) string {
 	ext := filepath.Ext(gen)
 	base := filepath.Base(gen)
-	noext := base[0 : len(base) - len(ext)]
+	noext := base[0 : len(base)-len(ext)]
 	f := fmt.Sprintf("%s_tomap.go", noext)
 	return f
 }

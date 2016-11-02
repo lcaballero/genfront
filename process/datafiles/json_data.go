@@ -5,16 +5,15 @@ import (
 	"io/ioutil"
 )
 
-
 type JsonData struct {
-	Key string
+	Key  string
 	File string
 	Data map[string]interface{}
 }
 
 func NewJsonData(key, datafile string) *JsonData {
 	return &JsonData{
-		Key: key,
+		Key:  key,
 		File: datafile,
 		Data: make(map[string]interface{}),
 	}
@@ -36,4 +35,3 @@ func (j *JsonData) Parse() (*JsonData, error) {
 func (j *JsonData) HasData() bool {
 	return j.Data != nil && len(j.Data) > 0
 }
-
