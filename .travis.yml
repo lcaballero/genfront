@@ -5,6 +5,8 @@ go:
 
 install:
 - export PATH=$PATH:$HOME/gopath/bin
+- go get github.com/codegangsta/cli
 - go get github.com/lcaballero/go-gh/./...
+- go get github.com/spf13/viper
 
 script: go test --race ./...
