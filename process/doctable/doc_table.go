@@ -125,7 +125,7 @@ func (d *DocFinder) renderJson(structs []*FieldAndDoc) error {
 
 	d.Env.MaybeExit(d.CliConf, nil, string(bb))
 
-	fmt.Printf("Writing output file: %s", d.OutputFile())
+	fmt.Printf("Writing output file: %s\n", d.OutputFile())
 	file, err := os.Create(d.OutputFile())
 	if err != nil {
 		return err
@@ -137,14 +137,15 @@ func (d *DocFinder) renderJson(structs []*FieldAndDoc) error {
 }
 
 func (d *DocFinder) renderTemplate(structs []*FieldAndDoc) error {
-	fmt.Printf("Reading template file: %s\n", JoinCwd(d.Template()))
-	textTemplate, err := ioutil.ReadFile(d.Template())
+	tplfile := JoinCwd(d.Template())
+	fmt.Printf("Reading template file: %s\n", tplfile)
+	textTemplate, err := ioutil.ReadFile(tplfile)
 	if err != nil {
 		return err
 	}
 
 	fmt.Println("Creating template")
-	fmt.Println(string(textTemplate))
+	fmt.Println("text template:\n", string(textTemplate))
 
 	template, err := d.Env.CreateTemplate(string(textTemplate))
 	if err != nil {

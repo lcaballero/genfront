@@ -8,14 +8,14 @@ import (
 type JsonData struct {
 	Key  string
 	File string
-	Data map[string]interface{}
+	Data interface{}
 }
 
 func NewJsonData(key, datafile string) *JsonData {
 	return &JsonData{
 		Key:  key,
 		File: datafile,
-		Data: make(map[string]interface{}),
+		Data: []string{},
 	}
 }
 
@@ -33,5 +33,5 @@ func (j *JsonData) Parse() (*JsonData, error) {
 }
 
 func (j *JsonData) HasData() bool {
-	return j.Data != nil && len(j.Data) > 0
+	return j.Data != nil
 }

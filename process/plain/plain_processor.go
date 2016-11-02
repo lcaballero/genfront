@@ -58,10 +58,10 @@ func (p *PlainProcessor) Run() {
 	log.Println("Rendering:", datafile, ext, key)
 	switch ext {
 	case ".json":
-		log.Println("processing json")
+		log.Printf("processing json, with key: %s", key)
 		p.AddJsonValues(ext, key, datafile)
 	case ".csv", ".tsv":
-		log.Println("processing csv")
+		log.Println("processing csv, with key: %s", key)
 		p.AddCsvValues(ext, key, datafile)
 	}
 

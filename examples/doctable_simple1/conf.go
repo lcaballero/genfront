@@ -1,7 +1,10 @@
-package examples
+package doctable_simple1
+
+type MonoStat func()
+type CountStat func()
 
 //go:generate genfront doctable --line $GOLINE --output conf-options.json
-type Conf2 struct {
+type Conf struct {
 	// Comment line 1
 	// Comment line 2
 	MinLength int64
