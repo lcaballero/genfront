@@ -33,7 +33,6 @@ node_modules/
 pkg/
 bin/
 .idea/
-.files/
 
 files/elasticsearch/
 src/tmp-*
