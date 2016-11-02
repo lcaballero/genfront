@@ -1,6 +1,6 @@
 package examples
 
-//go:generate genfront fields --output struct_file.gen.go --template ../.files/struct_sql_tomap.fm --line $GOLINE
+//go:generate genfront fields --output struct_file.gen.go --template struct_sql_tomap.fm --line $GOLINE
 type Effort struct {
 	Id           int
 	Title        string
