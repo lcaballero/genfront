@@ -18,7 +18,7 @@ type Processors struct {
 	PlainProcessor    Processor
 }
 
-func withContext(p Processor) func(*cmd.Context) {
+func WithContext(p Processor) func(*cmd.Context) {
 	return func(c *cmd.Context) {
 		p(NewCliConf(c))
 	}
@@ -45,10 +45,6 @@ func doctableCommand(p Processor) cmd.Command {
 			Usage: "Optional input .go file to process.",
 		},
 		cmd.StringFlag{
-			Name:  "output",
-			Usage: "Name of json file to output.",
-		},
-		cmd.StringFlag{
 			Name:  "template",
 			Usage: "The name of the template file to render.",
 		},
@@ -64,17 +60,13 @@ func doctableCommand(p Processor) cmd.Command {
 	return cmd.Command{
 		Name:   "doctable",
 		Usage:  "Process a template with Go environment with fields and comments.",
-		Action: withContext(p),
-		Flags:  flags(debugFlag(), custom...),
+		Action: WithContext(p),
+		Flags:  Flags(DebugFlag(), DataFileFlag, custom),
 	}
 }
 
 func plainCommand(p Processor) cmd.Command {
 	custom := []cmd.Flag{
-		cmd.StringFlag{
-			Name:  "output",
-			Usage: "Name of source-code output file",
-		},
 		cmd.StringFlag{
 			Name:  "template",
 			Usage: "Optional value that specifies alternative template for processing",
@@ -92,17 +84,13 @@ func plainCommand(p Processor) cmd.Command {
 	return cmd.Command{
 		Name:   "plain",
 		Usage:  "Process a template with Go environment.",
-		Action: withContext(p),
-		Flags:  flags(debugFlag(), custom...),
+		Action: WithContext(p),
+		Flags:  Flags(DebugFlag(), DataFileFlag, custom),
 	}
 }
 
 func fieldsCommand(p Processor) cmd.Command {
 	custom := []cmd.Flag{
-		cmd.StringFlag{
-			Name:  "output",
-			Usage: "Name of source-code output file",
-		},
 		cmd.StringFlag{
 			Name:  "template",
 			Usage: "Optional value that specifies alternative template for processing",
@@ -116,8 +104,8 @@ func fieldsCommand(p Processor) cmd.Command {
 	return cmd.Command{
 		Name:   "fields",
 		Usage:  "Process struct fields for sql io.",
-		Action: withContext(p),
-		Flags:  flags(debugFlag(), custom...),
+		Action: WithContext(p),
+		Flags:  Flags(DebugFlag(), DataFileFlag, custom),
 	}
 }
 
@@ -127,20 +115,23 @@ func frontCommand(p Processor) cmd.Command {
 			Name:  "input",
 			Usage: "Front-matter file to process.",
 		},
-		cmd.StringFlag{
-			Name:  "output",
-			Usage: "Name of source-code output file.",
-		},
 	}
 	return cmd.Command{
 		Name:   "front",
 		Usage:  "Runs generator based on a front-matter file.",
-		Flags:  flags(debugFlag(), custom...),
-		Action: withContext(p),
+		Action: WithContext(p),
+		Flags:  Flags(DebugFlag(), custom),
 	}
 }
 
-func debugFlag() []cmd.Flag {
+var DataFileFlag = []cmd.Flag{
+	cmd.StringFlag{
+		Name:  "data-file",
+		Usage: "Provide data from a file. Value should be name:file.ext",
+	},
+}
+
+func DebugFlag() []cmd.Flag {
 	return []cmd.Flag{
 		cmd.BoolFlag{
 			Name:  "noop",
@@ -151,12 +142,16 @@ func debugFlag() []cmd.Flag {
 			Usage: "Process file, output to std-out, and show data points",
 		},
 		cmd.StringFlag{
-			Name:  "data-file",
-			Usage: "Provide data from a file.  Value should be name:file.ext",
+			Name:  "output",
+			Usage: "Name of source-code output file.",
 		},
 	}
 }
 
-func flags(b []cmd.Flag, flags ...cmd.Flag) []cmd.Flag {
-	return append(b, flags...)
+func Flags(flags ...[]cmd.Flag) []cmd.Flag {
+	rs := make([]cmd.Flag, 0)
+	for _,gs := range flags {
+		rs = append(rs, gs...)
+	}
+	return rs
 }
