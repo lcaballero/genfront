@@ -4,9 +4,9 @@ package gel
 
 import "fmt"
 
-const _Type_name = "TextualElementAttribute"
+const _Type_name = "TextualElementAttributeNodeListAttributeList"
 
-var _Type_index = [...]uint8{0, 7, 14, 23}
+var _Type_index = [...]uint8{0, 7, 14, 23, 31, 44}
 
 func (i Type) String() string {
 	i -= 1
