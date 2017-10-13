@@ -1,7 +1,7 @@
 package {{ .GOPACKAGE }}
 
 import (
-	seelog "github.schq.secious.com/Logrhythm/Godeps/_workspace/src/github.com/cihub/seelog"
+	seelog "github.com/cihub/seelog"
 )
 
 var log seelog.LoggerInterface = seelog.Disabled

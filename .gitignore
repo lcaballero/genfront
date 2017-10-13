@@ -25,3 +25,8 @@ hs_err_pid*
 
 ### misc
 .idea
+
+### generated code
+*.gen.go
+*.gen.json
+*.gen.html
