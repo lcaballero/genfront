@@ -8,5 +8,6 @@ install:
 - go get github.com/codegangsta/cli
 - go get github.com/smartystreets/goconvey/convey
 - go get github.com/spf13/viper
+- go get github.com/lcaballero/gel
 
 script: go test --race ./...

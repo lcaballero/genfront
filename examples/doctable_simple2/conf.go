@@ -1,4 +1,4 @@
-package examples
+package doctable_simple2
 
 type MonoStat func()
 type CountStat func()
@@ -15,3 +15,6 @@ type Conf struct {
 	// Comments ReadQueue
 	ReadQueue string `omit:`
 }
+
+//go:generate genfront plain --output table.html --data-file data:conf-options.json --template conf.t
+

@@ -1,0 +1,11 @@
+[
+  {
+    "Name": "Conf",
+    "FieldDoc": {
+      "MaxAge": "Doc for Max Age",
+      "MaxLength": "Heres a description",
+      "MinLength": "Comment line 1\nComment line 2",
+      "ReadQueue": "Comments ReadQueue"
+    }
+  }
+]
