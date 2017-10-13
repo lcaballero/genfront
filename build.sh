@@ -21,6 +21,12 @@ go_embed() {
 		embedded_files/*.fm
 }
 
+ci() {
+	go install github.com/jteeuwen/go-bindata/go-bindata
+	echo $GOPATH
+	export PATH=$GOPATH/bin:$PATH
+}
+
 all() {
     go_embed && go_test && go_install
 }
