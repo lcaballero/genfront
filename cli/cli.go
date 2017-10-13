@@ -48,10 +48,10 @@ func doctableCommand(p Processor) cmd.Command {
 			Name:  "template",
 			Usage: "The name of the template file to render.",
 		},
-		cmd.StringFlag{
-			Name:  "var-name",
-			Usage: "Variable name for use in template.",
-		},
+//		cmd.StringFlag{
+//			Name:  "var-name",
+//			Usage: "Variable name for use in template.",
+//		},
 		cmd.IntFlag{
 			Name:  "line",
 			Usage: "Line number of this instance.",
