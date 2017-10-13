@@ -51,19 +51,7 @@ func (p *PlainProcessor) Run() {
 		log.Fatal(err)
 	}
 
-	ext, key, datafile, err := p.Ext()
-	if err != nil {
-		log.Fatal(err)
-	}
-	log.Println("Rendering:", datafile, ext, key)
-	switch ext {
-	case ".json":
-		log.Printf("processing json, with key: %s", key)
-		p.AddJsonValues(ext, key, datafile)
-	case ".csv", ".tsv":
-		log.Println("processing csv, with key: %s", key)
-		p.AddCsvValues(ext, key, datafile)
-	}
+	p.AddDataFileValues()
 
 	p.Env.MaybeExit(p.CliConf, tpl, "")
 
@@ -77,22 +65,49 @@ func (p *PlainProcessor) Run() {
 	}
 }
 
-func (p *PlainProcessor) AddJsonValues(ext, key, file string) {
-	json, err := datafiles.NewJsonData(key, file).Parse()
+func (p *PlainProcessor) AddDataFileValues() {
+	if p.CliConf.HasDataFile() {
+		keyed, err := p.CliConf.DataFile()
+		if err != nil {
+			log.Fatal(err)
+		}
+		p.AddSingleFile(keyed)
+		return
+	}
+	if p.CliConf.HasDataFiles() {
+		p.AddFiles()
+		return
+	}
+}
+
+func (p *PlainProcessor) AddFiles() {
+	keyed, err := p.CliConf.DataFiles()
 	if err != nil {
 		log.Fatal(err)
 	}
-	p.Env.Add(key, json.Data)
+	for _,k := range keyed {
+		p.AddJsonValues(k)
+	}
 }
 
-func (p *PlainProcessor) AddCsvValues(ext, key, file string) {
+func (p *PlainProcessor) AddSingleFile(keyed cli.DataFile) {
+	ext := filepath.Ext(keyed.File)
+	switch ext {
+	case ".tsv", ".csv":
+		p.AddTabSepValues(keyed)
+	case ".json":
+		p.AddJsonValues(keyed)
+	}
+}
+
+func (p *PlainProcessor) AddTabSepValues(keyed cli.DataFile) {
 	delimiter := ','
 	log.Println(p.CliConf.IsTabDelimited())
 	if p.CliConf.IsTabDelimited() {
 		delimiter = '\t'
 	}
 
-	csv, err := datafiles.NewCsvData(key, file, delimiter).Parse()
+	csv, err := datafiles.NewCsvData(keyed, delimiter).Parse()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -102,16 +117,15 @@ func (p *PlainProcessor) AddCsvValues(ext, key, file string) {
 		log.Fatal(err)
 	}
 
-	p.Env.Add(csv.Key, data)
+	p.Env.Add(keyed.Key, data)
 }
 
-func (p *PlainProcessor) Ext() (string, string, string, error) {
-	if !p.CliConf.HasDataFile() {
-		return "", "", "", errors.New("No data file")
-	}
-	key, file, err := p.CliConf.DataFile()
+func (p *PlainProcessor) AddJsonValues(keyed cli.DataFile) {
+	json := datafiles.NewJsonData(keyed)
+	data, err := json.Unmarshal()
 	if err != nil {
-		return "", "", "", err
+		log.Fatal(err)
 	}
-	return filepath.Ext(file), key, file, nil
+
+	p.Env.Add(keyed.Key, data)
 }

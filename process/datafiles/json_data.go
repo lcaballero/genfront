@@ -1,37 +1,34 @@
 package datafiles
 
 import (
-	"encoding/json"
 	"io/ioutil"
+	"encoding/json"
+	"github.com/lcaballero/genfront/cli"
 )
 
 type JsonData struct {
-	Key  string
-	File string
-	Data interface{}
+	Keyed cli.DataFile
+	Data map[string]interface{}
 }
 
-func NewJsonData(key, datafile string) *JsonData {
+
+func NewJsonData(keyed cli.DataFile) *JsonData {
 	return &JsonData{
-		Key:  key,
-		File: datafile,
-		Data: []string{},
+		Keyed: keyed,
 	}
 }
 
-func (j *JsonData) Parse() (*JsonData, error) {
-	bits, err := ioutil.ReadFile(j.File)
+func (d *JsonData) Unmarshal() (interface{}, error) {
+	bits, err := ioutil.ReadFile(d.Keyed.File)
 	if err != nil {
-		return j, err
+		return nil, err
 	}
 
-	err = json.Unmarshal(bits, &j.Data)
+	data := make(map[string]interface{})
+	err = json.Unmarshal(bits, &data)
 	if err != nil {
-		return j, err
+		return nil, err
 	}
-	return j, nil
-}
 
-func (j *JsonData) HasData() bool {
-	return j.Data != nil
+	return data, nil
 }
