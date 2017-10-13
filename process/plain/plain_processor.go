@@ -52,7 +52,20 @@ func (p *PlainProcessor) Run() {
 		log.Fatal(err)
 	}
 
-	p.AddDataFileValues()
+	ext, key, datafile, err := p.Ext()
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Println("Rendering:", datafile, ext, key)
+	switch ext {
+	case ".json":
+		log.Println("processing json")
+		p.AddJsonValues(ext, key, datafile)
+	case ".csv", ".tsv":
+		log.Println("processing csv")
+		p.AddCsvValues(ext, key, datafile)
+	}
+
 	p.Env.MaybeExit(p.CliConf, tpl, "")
 
 	log.Printf("Writing output file: %s", maybe.JoinCwd(p.OutputFile()))

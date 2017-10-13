@@ -1,0 +1,9 @@
+language: go
+
+go:
+   - 1.6
+
+install:
+- export PATH=$PATH:$HOME/gopath/bin
+
+script: go test --race $(go list ./... | grep -v vendor)

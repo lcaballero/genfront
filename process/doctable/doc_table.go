@@ -5,7 +5,6 @@ import (
 	"go/ast"
 	"go/parser"
 	"go/token"
-	"strings"
 
 	cmd "github.com/codegangsta/cli"
 	"github.com/lcaballero/genfront/cli"
@@ -15,6 +14,7 @@ import (
 	"io/ioutil"
 	"fmt"
 	"regexp"
+	"strings"
 )
 
 
@@ -103,6 +103,7 @@ func (d *DocFinder) ProcessFields(st *FieldAndDoc, x *ast.StructType) {
 					comments = append(comments, line)
 				}
 			}
+
 			// Skip private members
 			if strings.ToLower(name.Name)[:1] == name.Name[:1] {
 				continue
