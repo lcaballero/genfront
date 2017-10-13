@@ -23,8 +23,7 @@ go_embed() {
 
 ci() {
 	go install github.com/jteeuwen/go-bindata/go-bindata
-	echo $GOPATH
-	export PATH=$GOPATH/bin:$PATH
+	all
 }
 
 all() {
