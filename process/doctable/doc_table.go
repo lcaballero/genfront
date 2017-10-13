@@ -12,6 +12,8 @@ import (
 	"github.com/lcaballero/genfront/process"
 	"io/ioutil"
 	"os"
+	"regexp"
+	"strings"
 )
 
 type DocFinder struct {
@@ -37,7 +39,7 @@ func RunDocFinder(c *cli.CliConf) {
 	}
 }
 
-func (d *DocFinder) findFieldDocumentation() ([]*FieldAndDoc, error) {
+func (d *DocFinder) findFieldDocumentation() (*FieldAndDoc, error) {
 	env := d.AddGoEnvironment()
 	filename := env.Codefile(d.CliConf.InputFile())
 	fset := token.NewFileSet()
@@ -54,7 +56,7 @@ func (d *DocFinder) findFieldDocumentation() ([]*FieldAndDoc, error) {
 	line := d.Line()
 	state := LookingForGoGen
 	name := ""
-	structs := make([]*FieldAndDoc, 0)
+	var docs *FieldAndDoc
 
 	ast.Inspect(f, func(n ast.Node) bool {
 		switch x := n.(type) {
@@ -68,15 +70,14 @@ func (d *DocFinder) findFieldDocumentation() ([]*FieldAndDoc, error) {
 			name = x.Name.Name
 		case *ast.StructType:
 			if state == HasGoGenComment {
-				st := NewFieldAndDoc(name)
-				d.ProcessFields(st, x)
-				structs = append(structs, st)
+				docs = NewFieldAndDoc(name)
+				d.ProcessFields(docs, x)
 				state = LookingForGoGen
 			}
 		}
 		return true
 	})
-	return structs, nil
+	return docs, nil
 }
 
 func (d *DocFinder) ProcessFields(st *FieldAndDoc, x *ast.StructType) {
@@ -90,17 +91,29 @@ func (d *DocFinder) ProcessFields(st *FieldAndDoc, x *ast.StructType) {
 			comments := make([]string, 0)
 			if f.Doc != nil && f.Doc.List != nil {
 				for _, doc := range f.Doc.List {
-					comments = append(comments, doc.Text)
+					line := d.stripCommentDelims(doc.Text)
+					comments = append(comments, line)
 				}
 			}
 			if f.Comment != nil && f.Comment.List != nil {
 				for _, comment := range f.Comment.List {
-					comments = append(comments, comment.Text)
+					line := d.stripCommentDelims(comment.Text)
+					comments = append(comments, line)
 				}
 			}
-			st.Add(name.Name, comments...)
+
+			// Skip private members
+			if strings.ToLower(name.Name)[:1] == name.Name[:1] {
+				continue
+			}
+			st.Add(name.Name, strings.Join(comments, "\n"))
 		}
 	}
+}
+
+func (d *DocFinder) stripCommentDelims(line string) string {
+	re := regexp.MustCompile("^\\s*// *")
+	return re.ReplaceAllString(line, "")
 }
 
 func (d *DocFinder) Run() error {
@@ -117,8 +130,8 @@ func (d *DocFinder) Run() error {
 	}
 }
 
-func (d *DocFinder) renderJson(structs []*FieldAndDoc) error {
-	bb, err := json.MarshalIndent(structs, "", "  ")
+func (d *DocFinder) renderJson(docs *FieldAndDoc) error {
+	bb, err := json.MarshalIndent(docs, "", "  ")
 	if err != nil {
 		return err
 	}
@@ -136,10 +149,9 @@ func (d *DocFinder) renderJson(structs []*FieldAndDoc) error {
 	return err
 }
 
-func (d *DocFinder) renderTemplate(structs []*FieldAndDoc) error {
-	tplfile := JoinCwd(d.Template())
-	fmt.Printf("Reading template file: %s\n", tplfile)
-	textTemplate, err := ioutil.ReadFile(tplfile)
+func (d *DocFinder) renderTemplate(docs *FieldAndDoc) error {
+	fmt.Printf("Reading template file: %s\n", JoinCwd(d.Template()))
+	textTemplate, err := ioutil.ReadFile(d.Template())
 	if err != nil {
 		return err
 	}
@@ -162,13 +174,7 @@ func (d *DocFinder) renderTemplate(structs []*FieldAndDoc) error {
 	}
 	defer file.Close()
 	vals := d.Env.ToMap()
-
-	if d.CliConf.HasVarName() {
-		vals[d.CliConf.VarName()] = structs
-	} else {
-		vals["data"] = structs
-	}
-
+	vals["data"] = docs
 	template.Execute(file, vals)
 	return nil
 }
