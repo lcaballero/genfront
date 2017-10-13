@@ -3,7 +3,7 @@ package doctable_simple1
 type MonoStat func()
 type CountStat func()
 
-//go:generate genfront doctable --line $GOLINE --output conf-options.json
+//go:generate genfront doctable --line $GOLINE --output conf-options.gen.json
 type Conf struct {
 	// Comment line 1
 	// Comment line 2

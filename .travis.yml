@@ -9,5 +9,6 @@ install:
 - go get github.com/smartystreets/goconvey/convey
 - go get github.com/spf13/viper
 - go get github.com/lcaballero/gel
+- go get github.com/jteeuwen/go-bindata/go-bindata
 
-script: go test --race ./...
+script: ./build.sh ci
