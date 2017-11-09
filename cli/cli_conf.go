@@ -9,14 +9,14 @@ import (
 )
 
 const (
-	line = "line"
-	input = "input"
-	output = "output"
-	debug = "debug"
-	noop = "noop"
-	template = "template"
-	datafile = "data-file"
-	datafiles = "data-files"
+	line         = "line"
+	input        = "input"
+	output       = "output"
+	debug        = "debug"
+	noop         = "noop"
+	template     = "template"
+	datafile     = "data-file"
+	datafiles    = "data-files"
 	tabDelimited = "tab-delimited"
 )
 
@@ -41,13 +41,13 @@ func (c *CliConf) splitKeyedData(spec string) (DataFile, error) {
 	if len(split) != 2 {
 		return DataFile{}, fmt.Errorf("Expected key:data-file flag value, but found '%s'", spec)
 	}
-	return DataFile{Key:split[0], File:split[1]}, nil
+	return DataFile{Key: split[0], File: split[1]}, nil
 }
 func (c *CliConf) DataFiles() ([]DataFile, error) {
 	spec := c.ctx.String(datafiles)
 	split := strings.Split(spec, ",")
 	keyed := make([]DataFile, 0)
-	for _,split := range split {
+	for _, split := range split {
 		df, err := c.splitKeyedData(split)
 		if err != nil {
 			return nil, err

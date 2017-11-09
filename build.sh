@@ -18,7 +18,7 @@ go_embed() {
 		-o process/embedded_template.gen.go \
 		-pkg process \
 		-prefix embedded_files/ \
-		embedded_files/*.fm
+		embedded_files/*.gf
 }
 
 ci() {
@@ -27,6 +27,7 @@ ci() {
 }
 
 all() {
+	go_generate > /dev/null
     go_embed && go_test && go_install
 }
 

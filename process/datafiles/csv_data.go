@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/lcaballero/genfront/cli"
 	"github.com/lcaballero/genfront/process"
 	"log"
-	"github.com/lcaballero/genfront/cli"
 )
 
 type CsvData struct {
@@ -18,7 +18,7 @@ type CsvData struct {
 
 func NewCsvData(keyed cli.DataFile, delimiter rune) *CsvData {
 	return &CsvData{
-		Keyed: keyed,
+		Keyed:     keyed,
 		Delimiter: delimiter,
 	}
 }

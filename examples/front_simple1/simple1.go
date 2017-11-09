@@ -1,11 +1,13 @@
 package front_simple1
 
-type Rest struct {}
+type Rest struct{}
+
 func (r *Rest) Method(method string) *Rest {
 	return r
 }
 
-type Req struct {}
+type Req struct{}
+
 func (r *Req) Method(method string) *Req {
 	return r
 }

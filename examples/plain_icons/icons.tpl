@@ -1,4 +1,4 @@
-package examples
+package {{ .GOPACKAGE }}
 {{ .GEN_TAGLINE }}
 
 import (

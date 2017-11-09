@@ -48,10 +48,6 @@ func doctableCommand(p Processor) cmd.Command {
 			Name:  "template",
 			Usage: "The name of the template file to render.",
 		},
-//		cmd.StringFlag{
-//			Name:  "var-name",
-//			Usage: "Variable name for use in template.",
-//		},
 		cmd.IntFlag{
 			Name:  "line",
 			Usage: "Line number of this instance.",
@@ -61,7 +57,7 @@ func doctableCommand(p Processor) cmd.Command {
 		Name:   "doctable",
 		Usage:  "Process a template with Go environment with fields and comments.",
 		Action: WithContext(p),
-		Flags:  Flags(DebugFlag(), DataFileFlag, custom),
+		Flags:  Flags(DebugingFlags(), DataFileFlag, custom),
 	}
 }
 
@@ -89,7 +85,7 @@ func plainCommand(p Processor) cmd.Command {
 		Name:   "plain",
 		Usage:  "Process a template with Go environment.",
 		Action: WithContext(p),
-		Flags:  Flags(DebugFlag(), DataFileFlag, custom),
+		Flags:  Flags(DebugingFlags(), DataFileFlag, custom),
 	}
 }
 
@@ -109,7 +105,7 @@ func fieldsCommand(p Processor) cmd.Command {
 		Name:   "fields",
 		Usage:  "Process struct fields for sql io.",
 		Action: WithContext(p),
-		Flags:  Flags(DebugFlag(), DataFileFlag, custom),
+		Flags:  Flags(DebugingFlags(), DataFileFlag, custom),
 	}
 }
 
@@ -124,7 +120,7 @@ func frontCommand(p Processor) cmd.Command {
 		Name:   "front",
 		Usage:  "Runs generator based on a front-matter file.",
 		Action: WithContext(p),
-		Flags:  Flags(DebugFlag(), custom),
+		Flags:  Flags(DebugingFlags(), custom),
 	}
 }
 
@@ -135,7 +131,7 @@ var DataFileFlag = []cmd.Flag{
 	},
 }
 
-func DebugFlag() []cmd.Flag {
+func DebugingFlags() []cmd.Flag {
 	return []cmd.Flag{
 		cmd.BoolFlag{
 			Name:  "noop",
@@ -154,7 +150,7 @@ func DebugFlag() []cmd.Flag {
 
 func Flags(flags ...[]cmd.Flag) []cmd.Flag {
 	rs := make([]cmd.Flag, 0)
-	for _,gs := range flags {
+	for _, gs := range flags {
 		rs = append(rs, gs...)
 	}
 	return rs

@@ -63,7 +63,7 @@ func (p *FrontMatterProcess) Run() {
 	}
 
 	log.Println("Parsing front-matter")
-	_, err = p.AddSettings(p.portions.FrontMatter)
+	_, err = p.AddYaml(p.portions.FrontMatter)
 	if err != nil {
 		log.Fatal(err)
 	}

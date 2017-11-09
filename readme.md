@@ -1,8 +1,6 @@
 [![Build Status](https://travis-ci.org/lcaballero/genfront.svg?branch=master)](https://travis-ci.org/lcaballero/genfront)
 
-
 # Overview
-
 `genfront` is a code generating tool.  `genfront` provides several
 subcommands for different generating patterns.  See the usage below.
 
@@ -17,11 +15,9 @@ the static embedded yaml data.
 Placed above a struct, it provides struct fields as data to the
 template for rendering.
 
-
 ## Example Usage
 
 ### With Front Matter
-
 ```
 //go:generate genfront front --input req_methods.fm --output req_methods.go
 ```
@@ -68,9 +64,7 @@ func (r *Req) {{ . | title }}() *Req {
 #### camelCase
 #### hasPrefix
 
-
 ## License
-
 See license file.
 
 The use and distribution terms for this software are covered by the
@@ -78,7 +72,6 @@ The use and distribution terms for this software are covered by the
 root of this distribution. By using this software in any fashion, you are
 agreeing to be bound by the terms of this license. You must not remove this
 notice, or any other, from this software.
-
 
 [EPL-1]: http://opensource.org/licenses/eclipse-1.0.txt
 [Front Matter]: https://jekyllrb.com/docs/frontmatter/

@@ -17,4 +17,3 @@ type Conf struct {
 }
 
 //go:generate genfront plain --output table.gen.html --data-file data:conf-options.gen.json --template conf.t
-

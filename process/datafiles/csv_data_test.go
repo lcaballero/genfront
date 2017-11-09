@@ -5,15 +5,15 @@ import (
 
 	"strconv"
 
-	. "github.com/smartystreets/goconvey/convey"
 	"github.com/lcaballero/genfront/cli"
+	. "github.com/smartystreets/goconvey/convey"
 )
 
 func TestDataFile(t *testing.T) {
 
 	Convey("Should find 3x3 grid of numbers", t, func() {
 		datafile := cli.DataFile{
-			Key: "data",
+			Key:  "data",
 			File: ".files/comma-sep.csv",
 		}
 		d, _ := NewCsvData(datafile, ',').Parse()
@@ -33,7 +33,7 @@ func TestDataFile(t *testing.T) {
 
 	Convey("Should read the file and produce lines", t, func() {
 		datafile := cli.DataFile{
-			Key: "data",
+			Key:  "data",
 			File: ".files/comma-sep.csv",
 		}
 		d, err := NewCsvData(datafile, ',').Parse()

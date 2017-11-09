@@ -85,7 +85,7 @@ func (p *PlainProcessor) AddFiles() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	for _,k := range keyed {
+	for _, k := range keyed {
 		p.AddJsonValues(k)
 	}
 }

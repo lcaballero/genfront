@@ -1,16 +1,15 @@
 package datafiles
 
 import (
-	"io/ioutil"
 	"encoding/json"
 	"github.com/lcaballero/genfront/cli"
+	"io/ioutil"
 )
 
 type JsonData struct {
 	Keyed cli.DataFile
-	Data map[string]interface{}
+	Data  map[string]interface{}
 }
-
 
 func NewJsonData(keyed cli.DataFile) *JsonData {
 	return &JsonData{
