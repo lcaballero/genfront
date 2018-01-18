@@ -1,11 +1,11 @@
 #!/bin/bash
 set -e
 
-go_test() {
+runTests() {
 	go test $(go list ./... | grep -v vendor)
 }
 
-go_install() {
+install() {
 	go install
 }
 
@@ -27,10 +27,15 @@ fmt() {
 	gofmt -w .
 }
 
+generate() {
+	go generate
+}
+
 all() {
 	clean
-    go_test
-	go_install
+	generate
+    runTests
+	install
 }
 
 if [ "$1" == "" ]; then
