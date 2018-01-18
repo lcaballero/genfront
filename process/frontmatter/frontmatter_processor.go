@@ -9,7 +9,6 @@ import (
 	"os"
 
 	"github.com/lcaballero/genfront/cli"
-	. "github.com/lcaballero/genfront/maybe"
 	"github.com/lcaballero/genfront/process"
 )
 
@@ -50,7 +49,7 @@ func (p *FrontMatterProcess) Validate() error {
 }
 
 func (p *FrontMatterProcess) Run() {
-	log.Printf("Reading input file: %s", JoinCwd(p.InputFile()))
+	log.Printf("Reading input file: %s\n", p.InputFile())
 	b, err := ioutil.ReadFile(p.InputFile())
 	if err != nil {
 		log.Fatal(err)
@@ -76,7 +75,7 @@ func (p *FrontMatterProcess) Run() {
 
 	p.Env.MaybeExit(p.CliConf, tpl, "")
 
-	log.Printf("Writing output file: %s", JoinCwd(p.OutputFile()))
+	log.Printf("Writing output file: %s\n", p.OutputFile())
 	file, err := os.Create(p.OutputFile())
 	if err != nil {
 		log.Fatal(err)

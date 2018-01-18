@@ -35,7 +35,7 @@ func (d *CsvData) Parse() (*CsvData, error) {
 
 	reader.Comma = d.Delimiter
 
-	log.Println("Using delimiter " + string(reader.Comma))
+	log.Printf("Using delimiter: '%s'\n", string(reader.Comma))
 
 	records, err := reader.ReadAll()
 	if err != nil {

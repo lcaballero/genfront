@@ -8,6 +8,7 @@ import (
 	"github.com/lcaballero/genfront/process/fields"
 	"github.com/lcaballero/genfront/process/frontmatter"
 	"github.com/lcaballero/genfront/process/plain"
+	"log"
 )
 
 func main() {
@@ -18,4 +19,5 @@ func main() {
 		DocTableProcessor: doctable.RunDocFinder,
 	}
 	cli.NewCli(procs).Run(os.Args)
+	log.Println()
 }

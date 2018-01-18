@@ -11,6 +11,7 @@ import (
 	. "github.com/lcaballero/genfront/maybe"
 	"github.com/lcaballero/genfront/process"
 	"io/ioutil"
+	"log"
 	"os"
 )
 
@@ -42,7 +43,7 @@ func (d *DocFinder) findFieldDocumentation() ([]*FieldAndDoc, error) {
 	filename := env.Codefile(d.CliConf.InputFile())
 	fset := token.NewFileSet()
 
-	fmt.Printf("Parsing input file %s\n", filename)
+	log.Printf("Parsing input file: %s\n", filename)
 	f, err := parser.ParseFile(fset, filename, nil, parser.ParseComments)
 	if err != nil {
 		return nil, err
@@ -109,10 +110,10 @@ func (d *DocFinder) Run() error {
 		return err
 	}
 	if d.CliConf.HasTemplate() {
-		fmt.Println("Rendering struct field and doc to template")
+		log.Println("Rendering struct field and doc to template")
 		return d.renderTemplate(structs)
 	} else {
-		fmt.Println("Rendering struct field and doc to json")
+		log.Println("Rendering struct field and doc to json")
 		return d.renderJson(structs)
 	}
 }
@@ -125,7 +126,7 @@ func (d *DocFinder) renderJson(structs []*FieldAndDoc) error {
 
 	d.Env.MaybeExit(d.CliConf, nil, string(bb))
 
-	fmt.Printf("Writing output file: %s\n", d.OutputFile())
+	log.Printf("Writing output file: %s\n", d.OutputFile())
 	file, err := os.Create(d.OutputFile())
 	if err != nil {
 		return err
@@ -144,8 +145,8 @@ func (d *DocFinder) renderTemplate(structs []*FieldAndDoc) error {
 		return err
 	}
 
-	fmt.Println("Creating template")
-	fmt.Println("text template:\n", string(textTemplate))
+	log.Println("Creating template")
+	log.Println("text template:\n", string(textTemplate))
 
 	template, err := d.Env.CreateTemplate(string(textTemplate))
 	if err != nil {
@@ -155,7 +156,7 @@ func (d *DocFinder) renderTemplate(structs []*FieldAndDoc) error {
 
 	d.Env.MaybeExit(d.CliConf, template, "")
 
-	fmt.Printf("Writing output file: %s\n", d.OutputFile())
+	log.Printf("Writing output file: %s\n", d.OutputFile())
 	file, err := os.Create(d.OutputFile())
 	if err != nil {
 		return err

@@ -39,7 +39,7 @@ func (p *PlainProcessor) Validate() error {
 }
 
 func (p *PlainProcessor) Run() {
-	log.Println("Reading template file", maybe.JoinCwd(p.Template()))
+	log.Printf("Reading template file: %s\n", maybe.JoinCwd(p.Template()))
 	b, err := ioutil.ReadFile(p.Template())
 	if err != nil {
 		log.Fatal(err)
@@ -50,24 +50,25 @@ func (p *PlainProcessor) Run() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	log.Println("Template created")
 
 	ext, key, datafile, err := p.Ext()
 	if err != nil {
 		log.Fatal(err)
 	}
-	log.Println("Rendering:", datafile, ext, key)
+	log.Printf("Rendering file: '%s', ext: '%s', key: '%s'\n", datafile, ext, key)
 	switch ext {
 	case ".json":
 		log.Printf("processing json, with key: %s", key)
 		p.AddJsonValues(ext, key, datafile)
 	case ".csv", ".tsv":
-		log.Println("processing csv, with key: %s", key)
+		log.Printf("processing csv, with key: %s", key)
 		p.AddCsvValues(ext, key, datafile)
 	}
 
 	p.Env.MaybeExit(p.CliConf, tpl, "")
 
-	log.Printf("Writing output file: %s", maybe.JoinCwd(p.OutputFile()))
+	log.Printf("Writing output file: %s\n", p.OutputFile())
 	file, err := os.Create(p.OutputFile())
 	if err == nil {
 		defer file.Close()
@@ -87,7 +88,7 @@ func (p *PlainProcessor) AddJsonValues(ext, key, file string) {
 
 func (p *PlainProcessor) AddCsvValues(ext, key, file string) {
 	delimiter := ','
-	log.Println(p.CliConf.IsTabDelimited())
+	log.Printf("is tab delimited: %t\n", p.CliConf.IsTabDelimited())
 	if p.CliConf.IsTabDelimited() {
 		delimiter = '\t'
 	}

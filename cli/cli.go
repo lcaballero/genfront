@@ -150,7 +150,7 @@ func DebugFlag() []cmd.Flag {
 
 func Flags(flags ...[]cmd.Flag) []cmd.Flag {
 	rs := make([]cmd.Flag, 0)
-	for _,gs := range flags {
+	for _, gs := range flags {
 		rs = append(rs, gs...)
 	}
 	return rs

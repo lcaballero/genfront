@@ -13,6 +13,10 @@ func FatalString(s string, err error) string {
 	return s
 }
 
+func Cwd() string {
+	return FatalString(os.Getwd())
+}
+
 func JoinCwd(s string) string {
-	return filepath.Join(FatalString(os.Getwd()), s)
+	return filepath.Join(Cwd(), s)
 }

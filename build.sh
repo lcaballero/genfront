@@ -1,22 +1,40 @@
 #!/bin/bash
+set -e
 
-
-
-function go_test() {
+go_test() {
 	go test $(go list ./... | grep -v vendor)
 }
 
-function go_install() {
+go_install() {
 	go install
 }
 
-function go_embed() {
-	go-bindata -nocompress -o process/embedded_template.gen.go -pkg process -prefix .files/ .files/*.fm
+clean() {
+	gen=$(find . -type f | grep -e ".*gen\.go$")
+	for f in $gen; do
+		rm "$f"
+	done
 }
 
-function all() {
-    go_test && go_embed && go_install
+go_embed() {
+	go-bindata -nocompress \
+			   -o process/embedded_template.gen.go \
+			   -pkg process \
+			   -prefix examples/fields_simple1 examples/fields_simple1/*.fm
 }
 
-all
+fmt() {
+	gofmt -w .
+}
 
+all() {
+	clean
+    go_test
+	go_install
+}
+
+if [ "$1" == "" ]; then
+	all
+else
+	$1 $*
+fi

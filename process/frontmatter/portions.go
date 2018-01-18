@@ -28,7 +28,7 @@ func (p *Portions) Read(r *bufio.Reader) error {
 	n := 0
 	for err == nil && line != nil {
 		n++
-		log.Printf("Line number: %d\n", n)
+		//log.Printf("Line number: %d\n", n)
 		if string(line) == "---" {
 			switch state {
 			case Initial:

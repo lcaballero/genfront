@@ -14,7 +14,6 @@ import (
 	"io/ioutil"
 
 	"github.com/lcaballero/genfront/cli"
-	. "github.com/lcaballero/genfront/maybe"
 	"github.com/lcaballero/genfront/process"
 )
 
@@ -41,7 +40,7 @@ func (fp *FieldsProcessor) Load() {
 	filename := env.Codefile(fp.CliConf.InputFile())
 	fset := token.NewFileSet()
 
-	log.Printf("Parsing input file %s\n", filename)
+	log.Printf("Parsing input file: %s\n", filename)
 	f, err := parser.ParseFile(fset, filename, nil, parser.ParseComments)
 	if err != nil {
 		panic(err)
@@ -98,7 +97,7 @@ func (p *FieldsProcessor) Render() (*template.Template, error) {
 		return process.Asset(cli.DefaultFieldTemplate)
 	}
 	if p.CliConf.Template() != "" && p.Env.Exists(p.Env.RelativeFile(p.CliConf.Template())) {
-		log.Printf("Using specified template: %s\n", JoinCwd(p.CliConf.Template()))
+		log.Printf("Using specified template: %s\n", p.CliConf.Template())
 		getTemplate = func() ([]byte, error) {
 			return ioutil.ReadFile(p.Env.RelativeFile(p.CliConf.Template()))
 		}
