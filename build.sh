@@ -28,7 +28,7 @@ fmt() {
 }
 
 generate() {
-	go generate
+	go generate ./...
 }
 
 all() {
