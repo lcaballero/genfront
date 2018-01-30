@@ -34,6 +34,7 @@ generate() {
 all() {
 	clean
 	generate
+	go_embed
     runTests
 	install
 }

@@ -28,13 +28,17 @@ func NewCliConf(c *cmd.Context) *CliConf {
 	return &CliConf{ctx: c}
 }
 
-func (c *CliConf) DataFile() (string, string, error) {
+// KeyAndFile translate the --data-file flag value into a key:file parts.
+// If there was not a --data-file flag or if there are no key:file
+// pairs, it will return an error.
+func (c *CliConf) KeyAndFile() (key, file string, err error) {
 	spec := c.ctx.String(datafile)
 	split := strings.Split(spec, ":")
 	if len(split) != 2 {
 		return "", "", fmt.Errorf("Expected key:data-file flag value, but found '%s'", spec)
 	}
-	return split[0], split[1], nil
+	key, file, err = split[0], split[1], nil
+	return key, file, err
 }
 func (c *CliConf) IsTabDelimited() bool {
 	return c.ctx.IsSet(tabDelimited)

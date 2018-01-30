@@ -1,4 +1,4 @@
-package {{ .GOPACKAGE }}
+package examples
 
 import (
 	seelog "github.com/cihub/seelog"

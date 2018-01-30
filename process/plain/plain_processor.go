@@ -52,11 +52,13 @@ func (p *PlainProcessor) Run() {
 	}
 	log.Println("Template created")
 
-	ext, key, datafile, err := p.Ext()
+	ext, key, datafile, err := p.ExtKeyAndFile()
 	if err != nil {
-		log.Fatal(err)
+		log.Println("No data-file provided")
+	} else {
+		log.Printf("Rendering file: '%s', ext: '%s', key: '%s'\n", datafile, ext, key)
 	}
-	log.Printf("Rendering file: '%s', ext: '%s', key: '%s'\n", datafile, ext, key)
+
 	switch ext {
 	case ".json":
 		log.Printf("processing json, with key: %s", key)
@@ -106,11 +108,16 @@ func (p *PlainProcessor) AddCsvValues(ext, key, file string) {
 	p.Env.Add(csv.Key, data)
 }
 
-func (p *PlainProcessor) Ext() (string, string, string, error) {
+// ExtKeyAndFile checks for a data-file flag and if there is not a flag
+// returns and error, else it parse the value for the a key, naming the
+// data in the file for use in a template, the name of the file itself
+// and teh extension of the file so that a correct parser can be used
+// to transform the content into data usable by a template.
+func (p *PlainProcessor) ExtKeyAndFile() (ext, key, file string, err error) {
 	if !p.CliConf.HasDataFile() {
 		return "", "", "", errors.New("No data file")
 	}
-	key, file, err := p.CliConf.DataFile()
+	key, file, err = p.CliConf.KeyAndFile()
 	if err != nil {
 		return "", "", "", err
 	}
