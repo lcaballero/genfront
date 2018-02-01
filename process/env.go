@@ -3,7 +3,7 @@ package process
 import (
 	"bytes"
 	"fmt"
-	"html/template"
+	"text/template"
 	"io"
 	"log"
 	"os"
@@ -137,6 +137,10 @@ func (env *Env) BuildFuncMap() template.FuncMap {
 		"split":     strings.Split,
 		"camelCase": ToCamelCase,
 		"hasPrefix": strings.HasPrefix,
+		"base":      filepath.Base,
+		"dir":       filepath.Dir,
+		"toSlash":   filepath.ToSlash,
+		"dirList":   DirList,
 	}
 }
 

@@ -5,7 +5,7 @@ import (
 	"go/ast"
 	"go/parser"
 	"go/token"
-	"html/template"
+	"text/template"
 	"log"
 	"os"
 	"path/filepath"

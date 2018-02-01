@@ -3,6 +3,7 @@ package process
 import (
 	"fmt"
 	"strings"
+	"io/ioutil"
 )
 
 func ToPascal(s string) string {
@@ -45,4 +46,16 @@ func ToCamelCase(s ...string) string {
 		}
 	}
 	return strings.Join(pieces, "")
+}
+
+func DirList(dir string) []string {
+	fmt.Println("listing dir:", dir)
+	files, _ := ioutil.ReadDir(dir)
+	res := make([]string, len(files))
+	for i := 0; i < len(files); i++ {
+		f := files[i]
+		name := f.Name()
+		res[i] = name
+	}
+	return res
 }
